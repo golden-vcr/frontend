@@ -4,4 +4,4 @@
 </script>
 
 <li>{tape.id}: {tape.title}</li>
-<img src={tape.thumbnailImage} alt={`Preview image for tape ${tape.id}`} />
+

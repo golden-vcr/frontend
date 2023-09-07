@@ -36,12 +36,8 @@ h1 {
   line-height: 1.1;
 }
 
-.card {
-  padding: 2em;
-}
-
 #app {
-  max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
   padding: 2rem;
 }

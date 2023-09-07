@@ -1,5 +1,5 @@
 <script lang="ts">  
-  import TapeList from './lib/TapeList.svelte';
+  import TapeGrid from './lib/TapeGrid.svelte';
   import { fetchTapes } from './tapes/index'
 
   let promise = fetchTapes()
@@ -10,8 +10,14 @@
 {#await promise}
   <p>Loading...</p>
 {:then tapes}
-  <TapeList tapes={tapes} />
+  <TapeGrid tapes={tapes} />
 {:catch error}
   <p>{error.toString()}</p>
 {/await}
 </main>
+
+<style>
+  h2 {
+    margin-top: 0;
+  }
+</style>
