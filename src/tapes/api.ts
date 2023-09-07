@@ -1,6 +1,6 @@
-import { type Tape, parseTape } from "./types"
+import { type TapeListing, parseTapeListing } from "./types"
 
-export async function fetchTapes(): Promise<Tape[]> {
+export async function fetchTapes(): Promise<TapeListing> {
   const url = '/api/tapes'
   const r = await fetch(url)
   if (!r.ok) {
@@ -13,8 +13,5 @@ export async function fetchTapes(): Promise<Tape[]> {
     throw new Error(`Got ${r.status} response from ${url}${suffix}`)
   }
   const data = await r.json()
-  if (!Array.isArray(data)) {
-    throw new Error(`Got non-array response from ${url}`)
-  }
-  return data.map(parseTape)
+  return parseTapeListing(data)
 }

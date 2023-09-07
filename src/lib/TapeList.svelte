@@ -1,7 +1,7 @@
 <script lang="ts">
   import TapeListItem from "./TapeListItem.svelte"
-  import { type Tape } from "../tapes/types"
-  export let tapes: Tape[]
+  import { type TapeListingItem } from "../tapes/types"
+  export let tapes: TapeListingItem[]
 </script>
 
 <ul>

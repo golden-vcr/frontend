@@ -9,8 +9,8 @@
   <h2>Golden VCR Video Library</h2>
 {#await promise}
   <p>Loading...</p>
-{:then tapes}
-  <TapeList tapes={tapes} />
+{:then tapeListing}
+  <TapeList tapes={tapeListing.tapes} />
 {:catch error}
   <p>{error.toString()}</p>
 {/await}
