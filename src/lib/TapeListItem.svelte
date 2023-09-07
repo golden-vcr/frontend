@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { type TapeListingItem } from "../tapes/types"
-  export let tape: TapeListingItem
+  import { type Tape } from "../tapes/index"
+  export let tape: Tape
 </script>
 
-<li>{tape.id}: {tape.title}</li>
+<li>{tape.id}: <a href={tape.thumbnailImage}>{tape.title}</a></li>
