@@ -65,10 +65,10 @@ function parseTapeListingItem(data: unknown): TapeListingItem {
   const year = yearAsInt > 0 ? yearAsInt : undefined
 
   // TapeListingItem.runtimeMinutes
-  if (typeof obj["runtime"] !== "number") {
+  if (typeof obj["runtimeMinutes"] !== "number") {
     throw new Error("invalid tape: numeric 'runtimeMinutes' field is required")
   }
-  const runtimeAsInt = Math.trunc(obj["runtime"])
+  const runtimeAsInt = Math.trunc(obj["runtimeMinutes"])
   const runtimeMinutes = runtimeAsInt > 0 ? runtimeAsInt : undefined
 
   // TapeListingItem.thumbnailImageFilename
