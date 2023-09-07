@@ -3,4 +3,5 @@
   export let tape: Tape
 </script>
 
-<li>{tape.id}: <a href={tape.thumbnailImage}>{tape.title}</a></li>
+<li>{tape.id}: {tape.title}</li>
+<img src={tape.thumbnailImage} alt={`Preview image for tape ${tape.id}`} />
