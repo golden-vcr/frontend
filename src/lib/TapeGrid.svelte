@@ -17,4 +17,14 @@
     gap: 0.5rem;
     place-content: center;
   }
+  @media only screen and (max-width: 696px) {
+    div {
+      grid-template-columns: repeat(auto-fit, 160px);
+    }
+  }
+  @media only screen and (min-width: 1600px) {
+    div {
+      grid-template-columns: repeat(auto-fit, 275px);
+    }
+  }
 </style>

@@ -12,6 +12,16 @@
   img {
     max-width: 200px;
   }
+  @media only screen and (max-width: 696px) {
+    img {
+      max-width: 160px;
+    }
+  }
+  @media only screen and (min-width: 1600px) {
+    img {
+      max-width: 275px;
+    }
+  }
   p {
     margin-top: 0;
   }
