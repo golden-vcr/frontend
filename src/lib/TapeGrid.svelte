@@ -22,6 +22,11 @@
       grid-template-columns: repeat(auto-fit, 160px);
     }
   }
+  @media only screen and (max-width: 408px) {
+    div {
+      grid-template-columns: repeat(auto-fit, 120px);
+    }
+  }
   @media only screen and (min-width: 1600px) {
     div {
       grid-template-columns: repeat(auto-fit, 275px);
