@@ -1,13 +1,26 @@
 <script lang="ts">
   import { type Tape } from "../tapes/index"
   export let tape: Tape
+  let focused = false
+  let hovered = false
 </script>
 
-<div class="container" style={`background-color: ${tape.color}`}>
+<div
+  class="container"
+  style={`background-color: ${tape.color}`}
+  role="button"
+  tabindex={tape.id}
+  on:focus={() => { focused = true }}
+  on:blur={() => { focused = false }}
+  on:mouseenter={() => { hovered = true }}
+  on:mouseleave={() => { hovered = false; focused = false }}
+>
   <img src={tape.thumbnailImage} alt={`Preview image for tape ${tape.id}`} loading="lazy" />
+{#if hovered || focused}
   <div class="overlay">
     <p style={`background-color: ${tape.color}88`}>{tape.title}</p>
   </div>
+{/if}
 </div>
 
 <style>
@@ -17,6 +30,7 @@
     display: flex;
     justify-content: center;
     position: relative;
+    cursor: pointer;
   }
   img {
     max-width: 100%;
