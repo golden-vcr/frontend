@@ -3,6 +3,7 @@ import { fetchTapeListing, type TapeListing, type TapeListingItem } from "./api"
 export type Tape = {
   id: number
   title: string
+  color: string
   thumbnailImage: string
   images: string[]
   year?: number
@@ -19,6 +20,7 @@ function buildTapes(tapeListing: TapeListing): Tape[] {
     tapes.push({
       id: item.id,
       title: item.title,
+      color: item.color,
       thumbnailImage: `${tapeListing.imageHostUrl}/${item.thumbnailImageFilename}`,
       images: item.imageFilenames.map((filename) => `${tapeListing.imageHostUrl}/${filename}`),
       year: item.year > 0 ? item.year : undefined,
