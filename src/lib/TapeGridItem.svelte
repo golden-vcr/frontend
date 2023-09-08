@@ -13,6 +13,7 @@
 <style>
   .container {
     width: 200px;
+    aspect-ratio: 0.55;
     display: flex;
     justify-content: center;
     position: relative;
