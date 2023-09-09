@@ -1,23 +1,18 @@
 <script lang="ts">  
-  import TapeGrid from './lib/TapeGrid.svelte';
-  import { fetchTapes } from './tapes/index'
+  import { Router, Link, Route } from 'svelte-routing'
+  import HomePage from './routes/HomePage.svelte'
+  import ExplorePage from './routes/ExplorePage.svelte'
 
-  let promise = fetchTapes()
+  export let url = ''
 </script>
 
-<main>
-  <h2>Golden VCR Video Library</h2>
-{#await promise}
-  <p>Loading...</p>
-{:then tapes}
-  <TapeGrid tapes={tapes} />
-{:catch error}
-  <p>{error.toString()}</p>
-{/await}
-</main>
-
-<style>
-  h2 {
-    margin-top: 0;
-  }
-</style>
+<Router {url}>
+  <nav>
+    <Link to="/">Home</Link>
+    <Link to="/explore">Explore</Link>
+  </nav>
+  <div>
+    <Route path="/" component={HomePage} />
+    <Route path="/explore" component={ExplorePage} />
+  </div>
+</Router>

@@ -26,7 +26,6 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -39,13 +38,18 @@ h1 {
 #app {
   width: 100%;
   margin: 0 auto;
-  padding: 2rem;
 }
 
-@media only screen and (max-width: 696px) {
-  #app {
-    padding: 1rem;
-  }
+nav {
+  display: flex;
+  padding: 1rem;
+  background-color: #1a1a1a;
+  border-bottom: 1px solid #181818;
+}
+
+nav > a {
+  color: white;
+  padding: 0 0.5rem;
 }
 
 button {
