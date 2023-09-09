@@ -22,3 +22,15 @@ you make changes to the frontend, the app will hot-reload your changes. Thanks t
 dev-server proxy configuration in [`vite.config.ts`](./vite.config.ts), any requests
 made to `/api/*` will be proxied to `https://goldenvcr.com/api/*`, with the appropriate
 headers injected to prevent CORS errors.
+
+## Deployment
+
+Once the frontend app is built, it's deployed to an S3-compatible `frontend` bucket in
+DigitalOcean Spaces. Before you can deploy the app, you'll need to write a `deploy.env`
+file containing the environment variables required in [`deploy.js`](./deploy.js): if
+you've cloned the [terraform](https://github.com/golden-vcr/terraform) repo alongside
+this one, simply open a shell in the root of that repo and run
+`terraform output -raw frontend_s3_env > ../frontend/deploy.env`.
+
+Once you have a valid `deploy.env` file, simply run `npm run deploy` to make a new
+build and deploy it to [goldenvcr.com](https://goldenvcr.com).
