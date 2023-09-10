@@ -1,8 +1,8 @@
 <script lang="ts">  
   import TapeList from '../lib/TapeList.svelte';
-  import { fetchTapes } from '../tapes/index'
+  import { type Tape } from '../tapes/index'
   
-  let promise = fetchTapes()
+  export let promise: Promise<Tape[]>
 </script>
 
 <main>
