@@ -1,19 +1,25 @@
 <script lang="ts">  
+  import ImageGallery from './ImageGallery.svelte'
   import { type Tape } from '../tapes/index'
   export let tape: Tape
 </script>
 
 <div>
-  <pre>{JSON.stringify(tape, null, 4)}</pre>
+  <h2>{tape.title}</h2>
+  <ImageGallery
+    images={tape.images.map((url) => ({
+      url,
+      alt: `Full-size image for tape ${tape.id}`,
+    }))}
+  />
 </div>
 
 <style>
   div {
-    background-color: #181818;
-    border: 1px solid #232323;
+    display: flex;
+    flex-direction: column;
   }
-  pre {
-    margin: 0;
-    padding: 1em;
+  h2 {
+    padding: 0 2rem;
   }
 </style>

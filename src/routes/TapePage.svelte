@@ -23,14 +23,3 @@
   <p>{error.toString()}</p>
 {/await}
 </main>
-
-<style>
-  main {
-    padding: 2rem;
-  }
-  @media only screen and (max-width: 696px) {
-    main {
-      padding: 1rem;
-    }
-  }
-</style>
