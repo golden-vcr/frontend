@@ -4,8 +4,15 @@
   export let tapes: Tape[]
 </script>
 
-<ul>
+<div>
 {#each tapes as tape}
   <TapeListItem tape={tape} />
 {/each}
-</ul>
+</div>
+
+<style>
+  div {
+    display: flex;
+    flex-direction: column;
+  }
+</style>
