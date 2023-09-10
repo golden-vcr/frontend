@@ -2,11 +2,19 @@
   export let images: {url: string, alt: string}[]
 </script>
 
-<div class="container">
+<div
+  class="container"
+  on:wheel={(e) => {
+    if (e.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
+      if (e.deltaX === 0 && e.deltaZ === 0 && e.deltaY !== 0) {
+        e.preventDefault()
+        e.currentTarget.scrollBy(e.deltaY, 0)
+      }
+    }
+  }
+}>
 {#each images as image}
-  <div class="image">
-    <img src={image.url} alt={image.alt} />
-  </div>
+  <img src={image.url} alt={image.alt} />
 {/each}
 </div>
 
@@ -20,5 +28,8 @@
     gap: 20px;
     overflow-x: scroll;
     display: flex;
+  }
+  img {
+    object-fit: contain;
   }
 </style>

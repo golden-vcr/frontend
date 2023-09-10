@@ -5,7 +5,7 @@
   export let promise: Promise<Tape[]>
 </script>
 
-<main>
+<div>
 {#await promise}
   <p style="text-align: center">Loading...</p>
 {:then tapes}
@@ -13,16 +13,15 @@
 {:catch error}
   <p>{error.toString()}</p>
 {/await}
-</main>
+</div>
 
 <style>
-  main {
+  div {
     padding: 2rem;
   }
   @media only screen and (max-width: 696px) {
-    main {
+    div {
       padding: 1rem;
     }
   }
 </style>
-  

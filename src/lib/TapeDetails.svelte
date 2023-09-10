@@ -4,7 +4,7 @@
   export let tape: Tape
 </script>
 
-<div>
+<div class="container">
   <h2>{tape.title}</h2>
   <ImageGallery
     images={tape.images.map((url) => ({
@@ -15,9 +15,11 @@
 </div>
 
 <style>
-  div {
+  .container {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    overflow-y: hidden;
   }
   h2 {
     padding: 0 2rem;

@@ -16,7 +16,7 @@
     <Link to="/tapes">Tapes</Link>
     <Link to="/explore">Explore</Link>
   </nav>
-  <div>
+  <main>
     <Route path="/" component={HomePage} />
     <Route path="/tapes">
       <TapesPage promise={promise} />
@@ -27,5 +27,5 @@
     <Route path="/explore">
       <ExplorePage promise={promise} />
     </Route>
-  </div>
+  </main>
 </Router>

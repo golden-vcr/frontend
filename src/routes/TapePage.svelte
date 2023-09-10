@@ -14,12 +14,10 @@
   })
 </script>
 
-<main>
 {#await tapePromise}
-  <p style="text-align: center">Loading...</p>
+<p style="text-align: center">Loading...</p>
 {:then tape}
-  <TapeDetails tape={tape} />
+<TapeDetails tape={tape} />
 {:catch error}
-  <p>{error.toString()}</p>
+<p>{error.toString()}</p>
 {/await}
-</main>
