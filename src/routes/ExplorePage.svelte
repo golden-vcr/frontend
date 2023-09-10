@@ -1,5 +1,5 @@
 <script lang="ts">  
-  import TapeGrid from '../lib/TapeGrid.svelte';
+  import TapeGrid from '../lib/TapeGrid.svelte'
   import { type Tape } from '../tapes/index'
   
   export let promise: Promise<Tape[]>

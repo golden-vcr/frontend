@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { type Tape } from "../tapes/index"
+  import { Link } from 'svelte-routing'
+  import { type Tape } from '../tapes/index'
   export let tape: Tape
 </script>
 
 <div class="container">
   <img src={tape.thumbnailImage} alt={`Preview image for tape ${tape.id}`} loading="lazy" />
   <div class="info">
-    <span class="title">{tape.title}</span>
+    <span class="title"><Link to={`/tapes/${tape.id}`}>{tape.title}</Link></span>
     <ul>
       <li>
         <b>Golden VCR ID:</b> #{String(tape.id).padStart(3, '0')}

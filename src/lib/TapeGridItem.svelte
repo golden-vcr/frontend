@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { navigate } from 'svelte-routing'
   import { type Tape } from "../tapes/index"
   export let tape: Tape
   let focused = false
@@ -14,6 +15,12 @@
   on:blur={() => { focused = false }}
   on:mouseenter={() => { hovered = true }}
   on:mouseleave={() => { hovered = false; focused = false }}
+  on:click={() => navigate(`/tapes/${tape.id}`)}
+  on:keydown={(e) => {
+    if (e.key === 'Enter') {
+      navigate(`/tapes/${tape.id}`)
+    }
+  }}
 >
   <img src={tape.thumbnailImage} alt={`Preview image for tape ${tape.id}`} loading="lazy" />
 {#if hovered || focused}

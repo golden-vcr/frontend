@@ -1,5 +1,5 @@
 <script lang="ts">  
-  import TapeList from '../lib/TapeList.svelte';
+  import TapeList from '../lib/TapeList.svelte'
   import { type Tape } from '../tapes/index'
   
   export let promise: Promise<Tape[]>
