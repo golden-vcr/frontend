@@ -15,7 +15,7 @@
   }
 }>
 {#each images as image}
-  <img src={image.url} alt={image.alt} on:click={() => console.log(image)} />
+  <img src={image.url} alt={image.alt} />
 {/each}
 </div>
 
