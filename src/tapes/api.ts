@@ -23,7 +23,6 @@ export type TapeListingItem = {
   id: number
   title: string
   year: number
-  color: string
   runtimeMinutes: number
   thumbnailImageFilename: string
   images: TapeImageData[]
@@ -90,12 +89,6 @@ function parseTapeListingItem(data: unknown): TapeListingItem {
   }
   const year = obj["year"]
 
-  // TapeListingItem.color
-  if (typeof obj["color"] !== "string" || obj["color"] === "") {
-    throw new Error("invalid tape: non-empty 'color' field is required")
-  }
-  const color = obj["color"]
-
   // TapeListingItem.runtimeMinutes
   if (typeof obj["runtimeMinutes"] !== "number") {
     throw new Error("invalid tape: numeric 'runtimeMinutes' field is required")
@@ -117,7 +110,7 @@ function parseTapeListingItem(data: unknown): TapeListingItem {
     images.push(parseTapeImageData(obj["images"][i]))
   }
 
-  return { id, title, year, color, runtimeMinutes, thumbnailImageFilename, images }
+  return { id, title, year, runtimeMinutes, thumbnailImageFilename, images }
 }
 
 function parseTapeImageData(data: unknown): TapeImageData {
