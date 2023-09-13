@@ -26,8 +26,18 @@ export type TapeListingItem = {
   color: string
   runtimeMinutes: number
   thumbnailImageFilename: string
-  imageFilenames: string[]
+  images: TapeImageData[]
 }
+
+export type TapeImageData = {
+  filename: string
+  width: number
+  height: number
+  color: string
+  rotated: boolean
+}
+
+const HEX_COLOR_REGEX = /^#[a-zA-Z0-9]{3}(?:[a-zA-Z0-9]{3})?$/
 
 function parseTapeListing(data: unknown): TapeListing {
   if (typeof data !== "object") {
@@ -98,18 +108,68 @@ function parseTapeListingItem(data: unknown): TapeListingItem {
   }
   const thumbnailImageFilename = obj["thumbnailImageFilename"]
 
-  // TapeListingItem.imageFilenames
-  const imageFilenames = [] as string[]
-  if (!Array.isArray(obj["imageFilenames"])) {
-    throw new Error("invalid tape: 'imageFilenames' array is required")
+  // TapeListingItem.images
+  const images = [] as TapeImageData[]
+  if (!Array.isArray(obj["images"])) {
+    throw new Error("invalid tape: 'images' array is required")
   }
-  for (let i = 0; i < obj["imageFilenames"].length; i++) {
-    const filename = obj["imageFilenames"][i]
-    if (typeof filename !== "string" || filename === "") {
-      throw new Error(`invalid tape: 'imageFilenames' array item at index ${i} must be a non-empty string`)
-    }
-    imageFilenames.push(filename)
+  for (let i = 0; i < obj["images"].length; i++) {
+    images.push(parseTapeImageData(obj["images"][i]))
   }
 
-  return { id, title, year, color, runtimeMinutes, thumbnailImageFilename, imageFilenames }
+  return { id, title, year, color, runtimeMinutes, thumbnailImageFilename, images }
+}
+
+function parseTapeImageData(data: unknown): TapeImageData {
+  if (typeof data !== "object") {
+    throw new Error("invalid image data: data is not an object")
+  }
+  const obj = data as { [key: string]: unknown }
+
+  // TapeImageData.filename
+  if (typeof obj["filename"] !== "string" || obj["filename"] === "") {
+    throw new Error("invalid image data: non-empty 'filename' field is required")
+  }
+  const filename = obj["filename"]
+
+  // TapeImageData.width
+  if (typeof obj["width"] !== "number") {
+    throw new Error("invalid image data: numeric 'width' field is required")
+  }
+  const width = obj["width"]
+  if (width <= 0) {
+    throw new Error(`invalid image data: 'width' value must be positive (got ${width})`)
+  }
+
+  // TapeImageData.height
+  if (typeof obj["height"] !== "number") {
+    throw new Error("invalid image data: numeric 'height' field is required")
+  }
+  const height = obj["height"]
+  if (height <= 0) {
+    throw new Error(`invalid image data: 'height' value must be positive (got ${height})`)
+  }
+
+  // TapeImageData.color
+  if (typeof obj["color"] !== "string" || obj["color"] === "") {
+    throw new Error("invalid image data: non-empty 'color' field is required")
+  }
+  if (!obj["color"].match(HEX_COLOR_REGEX)) {
+    throw new Error("invalid image data: 'color' must be a hex-formatted RGB value")
+  }
+  const color = obj["color"]
+
+  // TapeImageData.rotated
+  if (typeof obj["rotated"] !== "boolean") {
+    throw new Error("invalid image data: boolean 'rotated' field is required")
+  }
+  const rotated = obj["rotated"]
+
+  return {
+    filename,
+    width,
+    height,
+    color,
+    rotated,
+  }
 }

@@ -1,5 +1,6 @@
 <script lang="ts">
-  export let images: {url: string, alt: string}[]
+  import { type TapeImage } from '../tapes'
+  export let images: TapeImage[]
 </script>
 
 <div
@@ -14,7 +15,7 @@
   }
 }>
 {#each images as image}
-  <img src={image.url} alt={image.alt} />
+  <img src={image.url} alt={image.alt} on:click={() => console.log(image)} />
 {/each}
 </div>
 

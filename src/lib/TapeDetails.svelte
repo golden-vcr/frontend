@@ -7,10 +7,7 @@
 <div class="container">
   <h2>{tape.title}</h2>
   <ImageGallery
-    images={tape.images.map((url) => ({
-      url,
-      alt: `Full-size image for tape ${tape.id}`,
-    }))}
+    images={tape.images}
   />
 </div>
 
