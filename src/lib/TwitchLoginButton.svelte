@@ -27,6 +27,7 @@
     border-radius: 4px;
     color: #fff;
     user-select: none;
+    white-space: nowrap;
   }
   .twitch-auth-button:hover {
     background-color: #4d3183;

@@ -15,11 +15,6 @@
   div {
     padding: 2rem;
   }
-  @media only screen and (max-width: 696px) {
-    div {
-      padding: 0;
-    }
-  }
   p {
     margin-top: 0;
   }
