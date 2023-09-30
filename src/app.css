@@ -34,12 +34,11 @@ nav {
   left: 0;
   right: 0;
   z-index: 999;
-  padding: 1rem;
   background-color: #1a1a1a;
   border-bottom: 1px solid #181818;
 }
 
-nav > a {
+nav a {
   color: white;
   padding: 0 0.5rem;
 }
