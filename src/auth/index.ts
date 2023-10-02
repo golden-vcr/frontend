@@ -146,6 +146,7 @@ function initForAuthRedirect() {
       isPending: false,
       loginUrl: prepareLoginUrlWithCachedCrsfToken(),
     }))
+    navigate('/', { replace: true })
   })
 }
 
