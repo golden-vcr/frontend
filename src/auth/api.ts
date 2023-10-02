@@ -2,7 +2,7 @@ import { config } from '../config'
 import { type AuthState, type UserDetails, type UserTokens } from './types'
 
 export async function authLogin(code: string): Promise<AuthState> {
-  const url = new URL('/api/showtime/auth/login', window.location.origin)
+  const url = new URL('/api/auth/login', window.location.origin)
   url.searchParams.set('code', code)
   url.searchParams.set('redirect_uri', window.location.origin + config.twitch.redirectPath)
 
@@ -24,7 +24,7 @@ export async function authRefresh(refreshToken: string): Promise<AuthState> {
     method: 'POST',
     headers: { Authorization: `Bearer ${refreshToken}` },
   }
-  const r = await fetch('/api/showtime/auth/refresh', init)
+  const r = await fetch('/api/auth/refresh', init)
   if (!r.ok && r.status !== 401) {
     throw new Error(`Auth refresh request failed with status code ${r.status}`)
   }
@@ -42,7 +42,7 @@ export async function authLogout(accessToken: string): Promise<AuthState> {
     method: 'POST',
     headers: { Authorization: `Bearer ${accessToken}` },
   }
-  const r = await fetch('/api/showtime/auth/logout', init)
+  const r = await fetch('/api/auth/logout', init)
   if (!r.ok && r.status !== 401) {
     throw new Error(`Logout request failed with status code ${r.status}`)
   }
