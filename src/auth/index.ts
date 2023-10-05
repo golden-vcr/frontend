@@ -23,6 +23,145 @@ export const auth = writable({
   loginUrl: '',
 })
 
+class AuthorizedFetcher {
+  currentState = null as AuthState | null
+  initCallbacks = [] as ((newState: AuthState) => void)[]
+  refreshCallbacks = [] as ((newState: AuthState) => void)[]
+
+  update(newState: AuthState) {
+    this.currentState = newState
+
+    const callbacks = this.initCallbacks.concat(this.refreshCallbacks)
+    this.initCallbacks = []
+    this.refreshCallbacks = []
+    for (const callback of callbacks) {
+      callback(newState)
+    }
+  }
+
+  fetch(input: RequestInfo | URL, init?: RequestInit) {
+    // If any requests are currently waiting on a refresh to complete, just add this one
+    // to the list - no need to make multiple concurrent requests with an expired access
+    // token, and we only want to initiate a single refresh, not one for each 401
+    if (this.refreshCallbacks.length > 0) {
+      console.log(`${input} will be fetched upon refresh`)
+      return this.fetchUponRefresh(input, init)
+    }
+
+    // If we don't yet have any AuthState cached, the app is still initializing and
+    // determining whether it's logged in - hold off until that initialization finishes
+    if (!this.currentState) {
+      console.log(`${input} will be fetched upon init`)
+      return this.fetchUponInit(input, init)
+    }
+
+    // If we're fully initialized and not logged in, we shouldn't be getting the user
+    // into situations where they could trigger API calls that require authorization
+    if (!this.currentState.loggedIn) {
+      throw new Error(`Unable to make authorized request to ${input}: not logged in`)
+    }
+
+    // We're logged in with a presumably-valid access token, and no refreshes are in
+    // progress: initiate the request, and if we hit a 401, initiate a refresh
+    console.log(`${input} is being fetched immediately`)
+    const accessToken = this.currentState.tokens.accessToken
+    return this.handleFetch(true, accessToken, input, init)
+  }
+
+  private fetchUponInit(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+    return new Promise<Response>((resolve, reject) => {
+      this.initCallbacks.push((newState) => {
+        if (newState.loggedIn) {
+          this.handleFetch(true, newState.tokens.accessToken, input, init)
+            .then(resolve)
+            .catch(reject)
+        } else {
+          // TODO: Automatically log the user out
+          reject(new Error(`Unable to make authorized request to ${input}: not logged in`))
+        }
+      })
+    })
+  }
+
+  private fetchUponRefresh(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+    return new Promise<Response>((resolve, reject) => {
+      this.refreshCallbacks.push((newState) => {
+        if (newState.loggedIn) {
+          this.handleFetch(false, newState.tokens.accessToken, input, init)
+            .then(resolve)
+            .catch(reject)
+        } else {
+          // TODO: Automatically log the user out
+          reject(new Error(`Unable to make authorized request to ${input}: token refresh failed`))
+        }
+      })
+    })
+  }
+
+  private async handleFetch(allowRefresh: boolean, accessToken: string, input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+    // Inject the access token into the request, as the value for the Authorization
+    // header
+    const headerValue = `Bearer ${accessToken}`
+    if (!init) {
+      init = {}
+    }
+    if (init.headers) {
+      if (init.headers instanceof Headers) {
+        init.headers.set("authorization", headerValue)
+      } else if (Array.isArray(init.headers)) {
+        init.headers.push(["authorization", headerValue])
+      } else {
+        init.headers["authorization"] = headerValue
+      }
+    } else {
+      init.headers = { authorization: headerValue }
+    }
+
+    // Make the request, and return the response directly unless we get a 401 error and
+    // we're permitted to refresh
+    const r = await fetch(input, init)
+    console.log(`${input} got ${r.status}`)
+    if (!allowRefresh || r.status !== 401) {
+      return r
+    }
+
+    // We got a 401 and we want to refresh: if there's not currently a refresh in
+    // progress, we want to initiate one
+    if (this.refreshCallbacks.length === 0) {
+      console.log(`${input} is initiating refresh`)
+      if (!this.currentState) {
+        throw new Error("Unable to initiate refresh: not initialized")
+      }
+      if (!this.currentState.loggedIn) {
+        throw new Error("Unable to initiate refresh: not logged in")
+      }
+      const refreshToken = this.currentState.tokens.refreshToken
+      authRefresh(refreshToken).then((newState) => {
+        cacheAuthState(newState)
+        auth.update((prev) => ({
+          ...prev,
+          state: newState,
+          isPending: false,
+        }))
+      })
+    }
+
+    console.log(`${input} will be fetched upon refresh`)
+    return this.fetchUponRefresh(input, init)
+  }
+}
+
+const authorizedFetcher = new AuthorizedFetcher()
+auth.subscribe((v) => {
+  if (!v.isPending) {
+    authorizedFetcher.update(v.state)
+  }
+})
+
+export function authorizedFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  return authorizedFetcher.fetch(input, init)
+}
+
 // From here, we proceed with our auth initialization routine, which branches to one of
 // three paths depending on the initial URL that the app has been loaded with
 switch (window.location.pathname) {
