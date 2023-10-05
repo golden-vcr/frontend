@@ -1,5 +1,5 @@
 import { config } from '../config'
-import { type AuthState, type UserDetails, type UserTokens } from './types'
+import { type AuthRole, type AuthState, type UserDetails, type UserTokens } from './types'
 
 export async function authLogin(code: string): Promise<AuthState> {
   const url = new URL('/api/auth/login', window.location.origin)
@@ -71,9 +71,16 @@ function parseAuthState(data: unknown): AuthState {
   // - if logged in: AuthState.user (required), AuthState.tokens (required)
   // - if logged out: AuthState.error (optional)
   if (loggedIn) {
+    if (typeof obj["role"] !== "string" || !obj["role"]) {
+      throw new Error("invalid auth state: non-empty 'role' field is required")
+    }
+    const role = obj["role"] as AuthRole
+    if (role !== "viewer" && role !== "broadcaster") {
+      throw new Error(`invalid auth state: role '${role}' is not recognized`)
+    }
     const user = parseUserDetails(obj["user"])
     const tokens = parseUserTokens(obj["tokens"])
-    return { loggedIn, user, tokens }
+    return { loggedIn, role, user, tokens }
   }
   const error = (typeof obj["error"] === "string") ? obj["error"] : ""
   return { loggedIn, error }

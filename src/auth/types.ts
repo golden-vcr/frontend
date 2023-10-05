@@ -1,5 +1,8 @@
+export type AuthRole = 'viewer' | 'broadcaster'
+
 export type AuthState = {
   loggedIn: true
+  role: AuthRole
   user: UserDetails
   tokens: UserTokens
 } | {
