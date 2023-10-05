@@ -6,13 +6,17 @@
   import TapesPage from './routes/TapesPage.svelte'
   import TapePage from './routes/TapePage.svelte'
   import ExplorePage from './routes/ExplorePage.svelte'
-  import ProfilePage from './routes/ProfilePage.svelte';
+  import AdminPage from './routes/AdminPage.svelte'
+  import ProfilePage from './routes/ProfilePage.svelte'
 
   import { fetchTapes } from './tapes'
   import { auth } from './auth'
 
+
   export let url = ''
   let promise = fetchTapes()
+
+  $: showAdminLinks = $auth.state.loggedIn && $auth.state.role === 'broadcaster'
 </script>
 
 <Router {url}>
@@ -21,6 +25,9 @@
       <Link to="/">Home</Link>
       <Link to="/tapes">Tapes</Link>
       <Link to="/explore">Explore</Link>
+{#if showAdminLinks}
+      <Link to="/admin">Admin</Link>
+{/if}
     </div>
     <div class="spacer" />
 {#if !$auth.state.loggedIn && !!$auth.state.error}
@@ -44,6 +51,9 @@
     </Route>
     <Route path="/explore">
       <ExplorePage promise={promise} />
+    </Route>
+    <Route path="/admin">
+      <AdminPage />
     </Route>
     <Route path="/profile" component={ProfilePage} />
   </main>
