@@ -77,6 +77,7 @@ function initForPageLoad() {
   // the refresh fails, we can clear cached auth state and return the app to a
   // logged-out state.
   authRefresh(initialState.tokens.refreshToken).then((newState) => {
+    cacheAuthState(newState)
     auth.update((prev) => ({
       ...prev,
       state: newState,
