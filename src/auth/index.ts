@@ -4,11 +4,13 @@ import { navigate } from "svelte-routing"
 import { config } from "../config"
 
 import { type AuthState } from "./types"
+import { AuthorizedFetcher } from "./fetch"
 import { restoreAuthState, cacheAuthState, clearAuthState } from "./storage"
 import { generateCsrfToken, cacheCsrfToken, validateCsrfToken } from "./csrf"
-import { authLogin, authLogout, authRefresh } from "./api"
+import { initiateLogin, initiateLogout, initiateRefresh } from "./api"
 
 export { type AuthState } from "./types"
+export { type UnauthorizedFetchError } from "./fetch"
 
 // Initialize a store that will hold our current auth state: any time we get a new
 // respones from any of our API's auth endpoints, we'll update auth.state. When the app
@@ -23,141 +25,42 @@ export const auth = writable({
   loginUrl: '',
 })
 
-class AuthorizedFetcher {
-  currentState = null as AuthState | null
-  initCallbacks = [] as ((newState: AuthState) => void)[]
-  refreshCallbacks = [] as ((newState: AuthState) => void)[]
-
-  update(newState: AuthState) {
-    this.currentState = newState
-
-    const callbacks = this.initCallbacks.concat(this.refreshCallbacks)
-    this.initCallbacks = []
-    this.refreshCallbacks = []
-    for (const callback of callbacks) {
-      callback(newState)
-    }
-  }
-
-  fetch(input: RequestInfo | URL, init?: RequestInit) {
-    // If any requests are currently waiting on a refresh to complete, just add this one
-    // to the list - no need to make multiple concurrent requests with an expired access
-    // token, and we only want to initiate a single refresh, not one for each 401
-    if (this.refreshCallbacks.length > 0) {
-      console.log(`${input} will be fetched upon refresh`)
-      return this.fetchUponRefresh(input, init)
-    }
-
-    // If we don't yet have any AuthState cached, the app is still initializing and
-    // determining whether it's logged in - hold off until that initialization finishes
-    if (!this.currentState) {
-      console.log(`${input} will be fetched upon init`)
-      return this.fetchUponInit(input, init)
-    }
-
-    // If we're fully initialized and not logged in, we shouldn't be getting the user
-    // into situations where they could trigger API calls that require authorization
-    if (!this.currentState.loggedIn) {
-      throw new Error(`Unable to make authorized request to ${input}: not logged in`)
-    }
-
-    // We're logged in with a presumably-valid access token, and no refreshes are in
-    // progress: initiate the request, and if we hit a 401, initiate a refresh
-    console.log(`${input} is being fetched immediately`)
-    const accessToken = this.currentState.tokens.accessToken
-    return this.handleFetch(true, accessToken, input, init)
-  }
-
-  private fetchUponInit(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
-    return new Promise<Response>((resolve, reject) => {
-      this.initCallbacks.push((newState) => {
-        if (newState.loggedIn) {
-          this.handleFetch(true, newState.tokens.accessToken, input, init)
-            .then(resolve)
-            .catch(reject)
-        } else {
-          // TODO: Automatically log the user out
-          reject(new Error(`Unable to make authorized request to ${input}: not logged in`))
-        }
-      })
-    })
-  }
-
-  private fetchUponRefresh(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
-    return new Promise<Response>((resolve, reject) => {
-      this.refreshCallbacks.push((newState) => {
-        if (newState.loggedIn) {
-          this.handleFetch(false, newState.tokens.accessToken, input, init)
-            .then(resolve)
-            .catch(reject)
-        } else {
-          // TODO: Automatically log the user out
-          reject(new Error(`Unable to make authorized request to ${input}: token refresh failed`))
-        }
-      })
-    })
-  }
-
-  private async handleFetch(allowRefresh: boolean, accessToken: string, input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
-    // Inject the access token into the request, as the value for the Authorization
-    // header
-    const headerValue = `Bearer ${accessToken}`
-    if (!init) {
-      init = {}
-    }
-    if (init.headers) {
-      if (init.headers instanceof Headers) {
-        init.headers.set("authorization", headerValue)
-      } else if (Array.isArray(init.headers)) {
-        init.headers.push(["authorization", headerValue])
-      } else {
-        init.headers["authorization"] = headerValue
-      }
-    } else {
-      init.headers = { authorization: headerValue }
-    }
-
-    // Make the request, and return the response directly unless we get a 401 error and
-    // we're permitted to refresh
-    const r = await fetch(input, init)
-    console.log(`${input} got ${r.status}`)
-    if (!allowRefresh || r.status !== 401) {
-      return r
-    }
-
-    // We got a 401 and we want to refresh: if there's not currently a refresh in
-    // progress, we want to initiate one
-    if (this.refreshCallbacks.length === 0) {
-      console.log(`${input} is initiating refresh`)
-      if (!this.currentState) {
-        throw new Error("Unable to initiate refresh: not initialized")
-      }
-      if (!this.currentState.loggedIn) {
-        throw new Error("Unable to initiate refresh: not logged in")
-      }
-      const refreshToken = this.currentState.tokens.refreshToken
-      authRefresh(refreshToken).then((newState) => {
-        cacheAuthState(newState)
-        auth.update((prev) => ({
-          ...prev,
-          state: newState,
-          isPending: false,
-        }))
-      })
-    }
-
-    console.log(`${input} will be fetched upon refresh`)
-    return this.fetchUponRefresh(input, init)
-  }
+/**
+ * Initiates a refresh via the auth API, attempting to use our Twitch refresh token to
+ * obtain a new user access token. If successful, caches the updated auth state to
+ * localStorage, then updates our store with the new state.
+ */
+function refreshSession(refreshToken: string) {
+  initiateRefresh(refreshToken).then((newState) => {
+    cacheAuthState(newState)
+    auth.update((prev) => ({
+      ...prev,
+      state: newState,
+      isPending: false,
+    }))
+  })
 }
 
-const authorizedFetcher = new AuthorizedFetcher()
+// Initialize a module-scoped AuthorizedFetcher object and hook it up to our store, so
+// we can expose a global authorizedFetch function as a convenience: in the rest of the
+// app we can just use authorizedFetch() in place of fetch(); no need to know anything
+// about auth state
+const authorizedFetcher = new AuthorizedFetcher(refreshSession)
 auth.subscribe((v) => {
   if (!v.isPending) {
     authorizedFetcher.update(v.state)
   }
 })
 
+/**
+ * Makes an HTTP request against a backend API endpoint that requires authorization,
+ * seamlessly setting the Authorization header to the logged-in user's access token, and
+ * seamlessly handling token refresh as needed. Throws UnauthorizedFetchError if unable
+ * to resolve credentials (e.g. if we're logged out while requests are pending);
+ * otherwise returns the Response directly from the API.
+ * 
+ * @see AuthorizedFetcher.fetch for more details.
+ */
 export function authorizedFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
   return authorizedFetcher.fetch(input, init)
 }
@@ -215,14 +118,7 @@ function initForPageLoad() {
   // completes successfully, we'll know that we have valid, up-to-date user details. If
   // the refresh fails, we can clear cached auth state and return the app to a
   // logged-out state.
-  authRefresh(initialState.tokens.refreshToken).then((newState) => {
-    cacheAuthState(newState)
-    auth.update((prev) => ({
-      ...prev,
-      state: newState,
-      isPending: false,
-    }))
-  })
+  refreshSession(initialState.tokens.refreshToken)
 }
 
 function initForAuthRedirect() {
@@ -278,7 +174,7 @@ function initForAuthRedirect() {
 
   // We now have a trusted authorization code that meets our needs, so have our auth
   // server exchange it for an access token to finish logging us in
-  authLogin(code).then((newState) => {
+  initiateLogin(code).then((newState) => {
     cacheAuthState(newState)
     auth.update((prev) => ({
       ...prev,
@@ -293,7 +189,7 @@ function initForAuthRedirect() {
 function initForLogout() {
   const initialState = restoreAuthState()
   if (initialState.loggedIn) {
-    authLogout(initialState.tokens.accessToken).then((newState) => {
+    initiateLogout(initialState.tokens.accessToken).then((newState) => {
       auth.update((prev) => ({
         ...prev,
         state: newState,

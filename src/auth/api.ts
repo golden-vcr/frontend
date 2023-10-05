@@ -1,7 +1,7 @@
 import { config } from '../config'
 import { type AuthRole, type AuthState, type UserDetails, type UserTokens } from './types'
 
-export async function authLogin(code: string): Promise<AuthState> {
+export async function initiateLogin(code: string): Promise<AuthState> {
   const url = new URL('/api/auth/login', window.location.origin)
   url.searchParams.set('code', code)
   url.searchParams.set('redirect_uri', window.location.origin + config.twitch.redirectPath)
@@ -19,7 +19,7 @@ export async function authLogin(code: string): Promise<AuthState> {
   return state
 }
 
-export async function authRefresh(refreshToken: string): Promise<AuthState> {
+export async function initiateRefresh(refreshToken: string): Promise<AuthState> {
   const init = {
     method: 'POST',
     headers: { Authorization: `Bearer ${refreshToken}` },
@@ -37,7 +37,7 @@ export async function authRefresh(refreshToken: string): Promise<AuthState> {
   return state
 }
 
-export async function authLogout(accessToken: string): Promise<AuthState> {
+export async function initiateLogout(accessToken: string): Promise<AuthState> {
   const init = {
     method: 'POST',
     headers: { Authorization: `Bearer ${accessToken}` },
