@@ -1,5 +1,5 @@
 export async function fetchCatalogListing(): Promise<CatalogListing> {
-  const url = '/api/tapes'
+  const url = '/api/tapes/catalog'
   const r = await fetch(url)
   if (!r.ok) {
     let suffix = ''
