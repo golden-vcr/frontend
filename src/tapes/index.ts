@@ -1,4 +1,4 @@
-import { fetchTapeListing, type TapeListing, type TapeListingItem } from "./api"
+import { fetchCatalogListing, type CatalogListing } from "./api"
 
 export type Tape = {
   id: number
@@ -7,7 +7,7 @@ export type Tape = {
   thumbnailImage: string
   images: TapeImage[]
   year?: number
-  runtimeMinutes?: number
+  runtime?: number
 }
 
 export type TapeImage = {
@@ -19,26 +19,26 @@ export type TapeImage = {
 }
 
 export async function fetchTapes(): Promise<Tape[]> {
-  return buildTapes(await fetchTapeListing())
+  return buildTapes(await fetchCatalogListing())
 }
 
-function buildTapes(tapeListing: TapeListing): Tape[] {
+function buildTapes(catalogListing: CatalogListing): Tape[] {
   const tapes = [] as Tape[]
-  for (const item of tapeListing.tapes) {
+  for (const item of catalogListing.items) {
     tapes.push({
       id: item.id,
       title: item.title,
       color: item.images.length > 0 ? item.images[0].color : '#cccccc',
-      thumbnailImage: `${tapeListing.imageHostUrl}/${item.thumbnailImageFilename}`,
+      thumbnailImage: `${catalogListing.imageHost}/${item.thumbnail}`,
       images: item.images.map((data, i) => ({
-        url: `${tapeListing.imageHostUrl}/${data.filename}`,
+        url: `${catalogListing.imageHost}/${data.filename}`,
         alt: getImageDescription(item.id, i, item.images.length),
         width: data.width,
         height: data.height,
         displayRotatedCW: data.rotated,
       })),
       year: item.year > 0 ? item.year : undefined,
-      runtimeMinutes: item.runtimeMinutes > 0 ? item.runtimeMinutes : undefined,
+      runtime: item.runtime > 0 ? item.runtime : undefined,
     })
   }
   return tapes

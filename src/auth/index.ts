@@ -13,7 +13,7 @@ export { type AuthState } from "./types"
 export { type UnauthorizedFetchError } from "./fetch"
 
 // Initialize a store that will hold our current auth state: any time we get a new
-// respones from any of our API's auth endpoints, we'll update auth.state. When the app
+// response from any of our API's auth endpoints, we'll update auth.state. When the app
 // first loads, we'll set an isPending flag to indicate that our auth state isn't
 // settled yet: this'll be cleared once our auth initialization logic is finished,
 // allowing the user to log in etc. The Twitch login URL needs to be populated with a

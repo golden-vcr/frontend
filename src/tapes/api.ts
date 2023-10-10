@@ -1,4 +1,4 @@
-export async function fetchTapeListing(): Promise<TapeListing> {
+export async function fetchCatalogListing(): Promise<CatalogListing> {
   const url = '/api/tapes'
   const r = await fetch(url)
   if (!r.ok) {
@@ -11,24 +11,24 @@ export async function fetchTapeListing(): Promise<TapeListing> {
     throw new Error(`Got ${r.status} response from ${url}${suffix}`)
   }
   const data = await r.json()
-  return parseTapeListing(data)
+  return parseCatalogListing(data)
 }
 
-export type TapeListing = {
-  tapes: TapeListingItem[]
-  imageHostUrl: string
+export type CatalogListing = {
+  imageHost: string
+  items: CatalogItem[]
 }
 
-export type TapeListingItem = {
+export type CatalogItem = {
   id: number
   title: string
   year: number
-  runtimeMinutes: number
-  thumbnailImageFilename: string
-  images: TapeImageData[]
+  runtime: number
+  thumbnail: string
+  images: GalleryImage[]
 }
 
-export type TapeImageData = {
+export type GalleryImage = {
   filename: string
   width: number
   height: number
@@ -38,37 +38,37 @@ export type TapeImageData = {
 
 const HEX_COLOR_REGEX = /^#[a-zA-Z0-9]{3}(?:[a-zA-Z0-9]{3})?$/
 
-function parseTapeListing(data: unknown): TapeListing {
+function parseCatalogListing(data: unknown): CatalogListing {
   if (typeof data !== "object") {
     throw new Error("invalid tape listing: data is not an object")
   }
   const obj = data as { [key: string]: unknown }
 
-  // TapeListing.tapes
-  if (!Array.isArray(obj["tapes"])) {
-    throw new Error("invalid tape listing: 'tapes' array is required")
+  // CatalogListing.items
+  if (!Array.isArray(obj["items"])) {
+    throw new Error("invalid tape listing: 'items' array is required")
   }
-  const tapes = [] as TapeListingItem[]
-  for (const tapeData of obj["tapes"]) {
-    tapes.push(parseTapeListingItem(tapeData))
+  const items = [] as CatalogItem[]
+  for (const itemData of obj["items"]) {
+    items.push(parseCatalogItem(itemData))
   }
 
-  // TapeListing.imageHostUrl
-  if (typeof obj["imageHostUrl"] !== "string" || obj["imageHostUrl"] === "") {
-    throw new Error("invalid tape: non-empty 'imageHostUrl' field is required")
+  // CatalogListing.imageHost
+  if (typeof obj["imageHost"] !== "string" || obj["imageHost"] === "") {
+    throw new Error("invalid tape: non-empty 'imageHost' field is required")
   }
-  const imageHostUrl = obj["imageHostUrl"]
+  const imageHost = obj["imageHost"]
 
-  return { tapes, imageHostUrl }
+  return { items, imageHost }
 }
 
-function parseTapeListingItem(data: unknown): TapeListingItem {
+function parseCatalogItem(data: unknown): CatalogItem {
   if (typeof data !== "object") {
     throw new Error("invalid tape: data is not an object")
   }
   const obj = data as { [key: string]: unknown }
 
-  // TapeListingItem.id
+  // CatalogItem.id
   if (typeof obj["id"] !== "number") {
     throw new Error("invalid tape: numeric 'id' field is required")
   }
@@ -77,55 +77,55 @@ function parseTapeListingItem(data: unknown): TapeListingItem {
     throw new Error("invalid tape: 'id' value must be greater than zero")
   }
 
-  // TapeListingItem.title
+  // CatalogItem.title
   if (typeof obj["title"] !== "string" || obj["title"] === "") {
     throw new Error("invalid tape: non-empty 'title' field is required")
   }
   const title = obj["title"]
 
-  // TapeListingItem.year
+  // CatalogItem.year
   if (typeof obj["year"] !== "number") {
     throw new Error("invalid tape: numeric 'year' field is required")
   }
   const year = obj["year"]
 
-  // TapeListingItem.runtimeMinutes
-  if (typeof obj["runtimeMinutes"] !== "number") {
-    throw new Error("invalid tape: numeric 'runtimeMinutes' field is required")
+  // CatalogItem.runtime
+  if (typeof obj["runtime"] !== "number") {
+    throw new Error("invalid tape: numeric 'runtime' field is required")
   }
-  const runtimeMinutes = obj["runtimeMinutes"]
+  const runtime = obj["runtime"]
 
-  // TapeListingItem.thumbnailImageFilename
-  if (typeof obj["thumbnailImageFilename"] !== "string" || obj["thumbnailImageFilename"] === "") {
-    throw new Error("invalid tape: non-empty 'thumbnailImageFilename' field is required")
+  // CatalogItem.thumbnail
+  if (typeof obj["thumbnail"] !== "string" || obj["thumbnail"] === "") {
+    throw new Error("invalid tape: non-empty 'thumbnail' field is required")
   }
-  const thumbnailImageFilename = obj["thumbnailImageFilename"]
+  const thumbnail = obj["thumbnail"]
 
-  // TapeListingItem.images
-  const images = [] as TapeImageData[]
+  // CatalogItem.images
+  const images = [] as GalleryImage[]
   if (!Array.isArray(obj["images"])) {
     throw new Error("invalid tape: 'images' array is required")
   }
   for (let i = 0; i < obj["images"].length; i++) {
-    images.push(parseTapeImageData(obj["images"][i]))
+    images.push(parseGalleryImage(obj["images"][i]))
   }
 
-  return { id, title, year, runtimeMinutes, thumbnailImageFilename, images }
+  return { id, title, year, runtime, thumbnail, images }
 }
 
-function parseTapeImageData(data: unknown): TapeImageData {
+function parseGalleryImage(data: unknown): GalleryImage {
   if (typeof data !== "object") {
     throw new Error("invalid image data: data is not an object")
   }
   const obj = data as { [key: string]: unknown }
 
-  // TapeImageData.filename
+  // GalleryImage.filename
   if (typeof obj["filename"] !== "string" || obj["filename"] === "") {
     throw new Error("invalid image data: non-empty 'filename' field is required")
   }
   const filename = obj["filename"]
 
-  // TapeImageData.width
+  // GalleryImage.width
   if (typeof obj["width"] !== "number") {
     throw new Error("invalid image data: numeric 'width' field is required")
   }
@@ -134,7 +134,7 @@ function parseTapeImageData(data: unknown): TapeImageData {
     throw new Error(`invalid image data: 'width' value must be positive (got ${width})`)
   }
 
-  // TapeImageData.height
+  // GalleryImage.height
   if (typeof obj["height"] !== "number") {
     throw new Error("invalid image data: numeric 'height' field is required")
   }
@@ -143,7 +143,7 @@ function parseTapeImageData(data: unknown): TapeImageData {
     throw new Error(`invalid image data: 'height' value must be positive (got ${height})`)
   }
 
-  // TapeImageData.color
+  // GalleryImage.color
   if (typeof obj["color"] !== "string" || obj["color"] === "") {
     throw new Error("invalid image data: non-empty 'color' field is required")
   }
@@ -152,7 +152,7 @@ function parseTapeImageData(data: unknown): TapeImageData {
   }
   const color = obj["color"]
 
-  // TapeImageData.rotated
+  // GalleryImage.rotated
   if (typeof obj["rotated"] !== "boolean") {
     throw new Error("invalid image data: boolean 'rotated' field is required")
   }

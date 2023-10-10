@@ -20,8 +20,8 @@
 {/if}
       </li>
       <li>
-{#if tape.runtimeMinutes}
-        <b>Runtime:</b> {tape.runtimeMinutes} minutes
+{#if tape.runtime}
+        <b>Runtime:</b> {tape.runtime} minutes
 {:else}
         <i>Unknown runtime</i>
 {/if}
