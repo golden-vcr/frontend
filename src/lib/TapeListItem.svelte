@@ -1,6 +1,9 @@
 <script lang="ts">
   import { Link } from 'svelte-routing'
   import { type Tape } from '../tapes/index'
+
+  import TagBar from './TagBar.svelte'
+
   export let tape: Tape
 </script>
 
@@ -8,6 +11,7 @@
   <img src={tape.thumbnailImage} alt={`Preview image for tape ${tape.id}`} loading="lazy" />
   <div class="info">
     <span class="title"><Link to={`/tapes/${tape.id}`}>{tape.title}</Link></span>
+    <TagBar tags={tape.tags} />
     <ul>
       <li>
         <b>Golden VCR ID:</b> #{String(tape.id).padStart(3, '0')}

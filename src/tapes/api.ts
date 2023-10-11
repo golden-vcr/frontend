@@ -26,6 +26,7 @@ export type CatalogItem = {
   runtime: number
   thumbnail: string
   images: GalleryImage[]
+  tags: string[]
 }
 
 export type GalleryImage = {
@@ -110,7 +111,20 @@ function parseCatalogItem(data: unknown): CatalogItem {
     images.push(parseGalleryImage(obj["images"][i]))
   }
 
-  return { id, title, year, runtime, thumbnail, images }
+  // CatalogItem.tags
+  const tags = [] as string[]
+  if (!Array.isArray(obj["tags"])) {
+    throw new Error("invalid tape: 'tags' array is required")
+  }
+  for (let i = 0; i < obj["tags"].length; i++) {
+    const tag = obj["tags"][i]
+    if (typeof tag !== "string" || tag === "") {
+      throw new Error(`invalid tape: 'tags' item at index ${i} must be a non-empty string`)
+    }
+    tags.push(tag)
+  }
+
+  return { id, title, year, runtime, thumbnail, images, tags }
 }
 
 function parseGalleryImage(data: unknown): GalleryImage {

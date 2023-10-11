@@ -3,11 +3,12 @@ import { fetchCatalogListing, type CatalogListing } from "./api"
 export type Tape = {
   id: number
   title: string
+  year?: number
+  runtime?: number
   color: string
   thumbnailImage: string
   images: TapeImage[]
-  year?: number
-  runtime?: number
+  tags: string[]
 }
 
 export type TapeImage = {
@@ -28,6 +29,8 @@ function buildTapes(catalogListing: CatalogListing): Tape[] {
     tapes.push({
       id: item.id,
       title: item.title,
+      year: item.year > 0 ? item.year : undefined,
+      runtime: item.runtime > 0 ? item.runtime : undefined,
       color: item.images.length > 0 ? item.images[0].color : '#cccccc',
       thumbnailImage: `${catalogListing.imageHost}/${item.thumbnail}`,
       images: item.images.map((data, i) => ({
@@ -37,8 +40,7 @@ function buildTapes(catalogListing: CatalogListing): Tape[] {
         height: data.height,
         displayRotatedCW: data.rotated,
       })),
-      year: item.year > 0 ? item.year : undefined,
-      runtime: item.runtime > 0 ? item.runtime : undefined,
+      tags: item.tags,
     })
   }
   return tapes
