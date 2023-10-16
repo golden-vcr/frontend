@@ -1,7 +1,7 @@
 <script lang="ts">
   import { type Tape } from '../tapes'
   
-  import Tag from './Tag.svelte'
+  import TagHeading from './TagHeading.svelte'
   import CondensedTapeList from './CondensedTapeList.svelte'
   import TapeList from './TapeList.svelte'
 
@@ -36,20 +36,25 @@
 
 <div class="container">
 {#each sections as section}
+  <div class="section">
 {#if section.tag}
-  <Tag tag={section.tag} />
+    <TagHeading tag={section.tag} />
 {/if}
 {#if condensed}
-  <CondensedTapeList tapes={section.tapes} />
+    <CondensedTapeList tapes={section.tapes} />
 {:else}
-  <TapeList tapes={section.tapes} />
+    <TapeList tapes={section.tapes} />
 {/if}
+  </div>
 {/each}
 </div>
 
 <style>
   .container {
     padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
   @media only screen and (max-width: 696px) {
     .container {
