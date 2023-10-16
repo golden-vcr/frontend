@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Router, Link, Route } from 'svelte-routing'
-  import HeaderNav from './lib/HeaderNav.svelte'
+  import { Router, Route } from 'svelte-routing'
+  import NavHeader from './lib/NavHeader.svelte'
 
   import HomePage from './routes/HomePage.svelte'
   import TapesPage from './routes/TapesPage.svelte'
@@ -12,13 +12,14 @@
   import { fetchTapes } from './tapes'
   import { auth } from './auth'
 
+  $: showAdminLinks = $auth.state.loggedIn && $auth.state.role === 'broadcaster'
 
   export let url = ''
   let promise = fetchTapes()
 </script>
 
 <Router {url}>
-  <HeaderNav />
+  <NavHeader {showAdminLinks} />
   <main>
 {#if !$auth.state.loggedIn && !!$auth.state.error}
     <div class="error">
