@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from 'svelte-routing'
-  import { type Tape } from "../tapes/index"
+  import { type Tape } from '../tapes'
   export let tape: Tape
   let focused = false
   let hovered = false
@@ -32,7 +32,7 @@
 
 <style>
   .container {
-    width: 200px;
+    flex: 0 0 198px;
     aspect-ratio: 0.55;
     display: flex;
     justify-content: center;
@@ -63,27 +63,7 @@
   }
   @media only screen and (max-width: 696px) {
     .container {
-      width: 160px;
+      flex-basis: 143px;
     }
-    p {
-      font-size: small;
-    }
-  }
-  @media only screen and (max-width: 408px) {
-    .container {
-      width: 120px;
-    }  
-  }
-  @media only screen and (min-width: 1600px) {
-    .container {
-      width: 275px;
-    }
-    p {
-      font-size: larger;
-      text-shadow: 2px 2px #00000088;
-    }
-  }
-  p {
-    margin-top: 0;
   }
 </style>

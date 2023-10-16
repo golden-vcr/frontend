@@ -16,5 +16,6 @@
     padding: 0.3em;
     font-weight: bold;
     text-shadow: rgba(0, 0, 0, 0.5) 1px 1px;
+    white-space: nowrap;
   }
 </style>

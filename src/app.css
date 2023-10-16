@@ -21,6 +21,10 @@ html, body, #app {
   height: 100%;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 /** Make the top-level div of the app a vertical flexbox container */
 #app, main {
   display: flex;
