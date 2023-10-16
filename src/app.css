@@ -23,6 +23,7 @@ html, body, #app {
 
 html {
   overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 /** Make the top-level div of the app a vertical flexbox container */
