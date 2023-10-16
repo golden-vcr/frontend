@@ -18,4 +18,9 @@
     text-shadow: rgba(0, 0, 0, 0.5) 1px 1px;
     white-space: nowrap;
   }
+  @media only screen and (max-width: 696px) {
+    div {
+      font-size: 0.875rem;
+    }
+  }
 </style>

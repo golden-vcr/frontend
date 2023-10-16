@@ -2,16 +2,33 @@
   import { Link } from 'svelte-routing'
   import { type Tape } from '../tapes/index'
 
-  import TagBar from './TagBar.svelte'
+  import Tag from './Tag.svelte'
 
   export let tape: Tape
 </script>
 
 <div class="container">
-  <img src={tape.thumbnailImage} alt={`Preview image for tape ${tape.id}`} loading="lazy" />
+  <div
+    class="thumbnail"
+    style={`background-color: ${tape.color}`}
+  >
+    <Link to={`/tapes/${tape.id}`}>
+      <img
+        src={tape.thumbnailImage}
+        alt={`Preview image for tape ${tape.id}`}
+        loading="lazy"
+      />
+    </Link>
+  </div>
   <div class="info">
-    <span class="title"><Link to={`/tapes/${tape.id}`}>{tape.title}</Link></span>
-    <TagBar tags={tape.tags} />
+    <span class="title">
+      <Link to={`/tapes/${tape.id}`}>{tape.title}</Link>
+    </span>
+    <div class="tags">
+{#each tape.tags as tag}
+      <Tag {tag} />
+{/each}
+    </div>
     <ul>
       <li>
         <b>Golden VCR ID:</b> #{String(tape.id).padStart(3, '0')}
@@ -38,19 +55,48 @@
   .container {
     display: flex;
     width: 100%;
-    margin-bottom: 20px;
   }
-  img {
-    height: 260px;
+  .thumbnail {
+    display: flex;
+    flex: 0 0 198px;
+    height: 360px;
+  }
+  .thumbnail img {
+    width: 100%;
+    height: 100%;
   }
   .info {
     width: 100%;
-    padding: 1rem;
+    padding: 0 1rem;
   }
   .title {
     font-weight: 500;
     font-size: 1.5rem;
     line-height: 1.0;
+  }
+  :global(.title a) {
+    color: white;
+  }
+  :global(.title a:hover) {
+    color: #535bf2;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.375rem;
+  }
+  @media only screen and (max-width: 696px) {
+    .thumbnail {
+      flex-basis: 143px;
+      height: 260px;
+    }
+    .title {
+      font-size: 1.25rem;
+    }
+    ul {
+      margin: 0;
+    }
   }
 </style>
 
