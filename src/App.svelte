@@ -30,11 +30,6 @@
 {/if}
     </div>
     <div class="spacer" />
-{#if !$auth.state.loggedIn && !!$auth.state.error}
-    <div class="error">
-      <b>LOGIN ERROR:</b> {$auth.state.error}
-    </div>
-{/if}
     <TwitchLoginButton
       loggedInUsername={$auth.state.loggedIn ? $auth.state.user.displayName : ''}
       profileImageUrl={$auth.state.loggedIn ? $auth.state.profileImageUrl : ''}
@@ -43,6 +38,11 @@
     />
   </nav>
   <main>
+{#if !$auth.state.loggedIn && !!$auth.state.error}
+    <div class="error">
+      <b>LOGIN ERROR:</b> {$auth.state.error}
+    </div>
+{/if}
     <Route path="/" component={HomePage} />
     <Route path="/tapes">
       <TapesPage promise={promise} />
@@ -69,6 +69,8 @@
     border: 2px solid #aa0000;
     background-color: #ffaaaa;
     color: #aa0000;
+    margin: 1rem;
+    margin-bottom: 0;
     padding: 0.2rem 1rem;
     margin-right: 1rem;
   }
