@@ -37,6 +37,7 @@
 {/if}
     <TwitchLoginButton
       loggedInUsername={$auth.state.loggedIn ? $auth.state.user.displayName : ''}
+      profileImageUrl={$auth.state.loggedIn ? $auth.state.profileImageUrl : ''}
       loginUrl={$auth.isPending ? '' : $auth.loginUrl}
       enableButtons={!$auth.isPending}
     />

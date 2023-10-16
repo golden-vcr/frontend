@@ -3,6 +3,7 @@ export type AuthRole = 'viewer' | 'broadcaster'
 export type AuthState = {
   loggedIn: true
   role: AuthRole
+  profileImageUrl: string
   user: UserDetails
   tokens: UserTokens
 } | {

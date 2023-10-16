@@ -67,10 +67,9 @@ function parseAuthState(data: unknown): AuthState {
   }
   const loggedIn = obj["loggedIn"]
 
-  // Parse remaining fields based on login state:
-  // - if logged in: AuthState.user (required), AuthState.tokens (required)
-  // - if logged out: AuthState.error (optional)
+  // Parse remaining fields based on login state
   if (loggedIn) {
+    // AuthState.role
     if (typeof obj["role"] !== "string" || !obj["role"]) {
       throw new Error("invalid auth state: non-empty 'role' field is required")
     }
@@ -78,10 +77,22 @@ function parseAuthState(data: unknown): AuthState {
     if (role !== "viewer" && role !== "broadcaster") {
       throw new Error(`invalid auth state: role '${role}' is not recognized`)
     }
+
+    // AuthState.profileImageUrl
+    let profileImageUrl = ""
+    if (typeof obj["profileImageUrl"] === "string" && obj["profileImageUrl"]) {
+      profileImageUrl = obj["profileImageUrl"]
+    }
+
+    // AuthState.user
     const user = parseUserDetails(obj["user"])
+
+    // AuthState.tokens
     const tokens = parseUserTokens(obj["tokens"])
-    return { loggedIn, role, user, tokens }
+
+    return { loggedIn, role, profileImageUrl, user, tokens }
   }
+  // AuthState.error
   const error = (typeof obj["error"] === "string") ? obj["error"] : ""
   return { loggedIn, error }
 }

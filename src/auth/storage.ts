@@ -12,6 +12,7 @@ const KEY_TWITCH_CLIENT_ID = TWITCH_AUTH_KEY('clientId')
 const KEY_TWITCH_USER_ID = TWITCH_AUTH_KEY('userId')
 const KEY_TWITCH_USER_LOGIN = TWITCH_AUTH_KEY('userLogin')
 const KEY_TWITCH_USER_DISPLAY_NAME = TWITCH_AUTH_KEY('userDisplayName')
+const KEY_TWITCH_PROFILE_IMAGE_URL = TWITCH_AUTH_KEY('profileImageUrl')
 const KEY_TWITCH_ACCESS_TOKEN = TWITCH_AUTH_KEY('accessToken')
 const KEY_TWITCH_REFRESH_TOKEN = TWITCH_AUTH_KEY('refreshToken')
 const KEY_TWITCH_SCOPES = TWITCH_AUTH_KEY('scopes')
@@ -27,6 +28,7 @@ export function cacheAuthState(state: AuthState) {
     localStorage.setItem(KEY_TWITCH_USER_ID, state.user.id)
     localStorage.setItem(KEY_TWITCH_USER_LOGIN, state.user.login)
     localStorage.setItem(KEY_TWITCH_USER_DISPLAY_NAME, state.user.displayName)
+    localStorage.setItem(KEY_TWITCH_PROFILE_IMAGE_URL, state.profileImageUrl)
     localStorage.setItem(KEY_TWITCH_ACCESS_TOKEN, state.tokens.accessToken)
     localStorage.setItem(KEY_TWITCH_REFRESH_TOKEN, state.tokens.refreshToken)
     localStorage.setItem(KEY_TWITCH_SCOPES, state.tokens.scopes.join(' '))
@@ -55,6 +57,7 @@ export function restoreAuthState(): AuthState {
   const userId = localStorage.getItem(KEY_TWITCH_USER_ID) || ''
   const userLogin = localStorage.getItem(KEY_TWITCH_USER_LOGIN) || ''
   const userDisplayName = localStorage.getItem(KEY_TWITCH_USER_DISPLAY_NAME) || ''
+  const profileImageUrl = localStorage.getItem(KEY_TWITCH_PROFILE_IMAGE_URL) || ''
   const accessToken = localStorage.getItem(KEY_TWITCH_ACCESS_TOKEN) || ''
   const refreshToken = localStorage.getItem(KEY_TWITCH_REFRESH_TOKEN) || ''
   const scopesString = localStorage.getItem(KEY_TWITCH_SCOPES) || ''
@@ -75,6 +78,7 @@ export function restoreAuthState(): AuthState {
   return {
     loggedIn: true,
     role: role as AuthRole,
+    profileImageUrl,
     user: {
       id: userId,
       login: userLogin,
