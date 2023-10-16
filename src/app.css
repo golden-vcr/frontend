@@ -43,11 +43,6 @@ header {
   border-bottom: 1px solid #181818;
 }
 
-header a {
-  color: white;
-  padding: 0 0.5rem;
-}
-
 /** The main content of the page should occupy the remaining space */
 main {
   flex: 1;

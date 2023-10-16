@@ -10,7 +10,7 @@
 
 <header>
   <nav>
-    <div class="links">
+    <div class="pages">
       <NavLink to="/">Home</NavLink>
       <NavLink to="/tapes">Tapes</NavLink>
       <NavLink to="/explore">Explore</NavLink>
@@ -42,9 +42,21 @@
   }
   nav {
     flex: 1;
+    padding: 0.5rem 1rem;
+    padding-left: 0.5rem;
   }
-  .links {
-    padding: 1rem;
+  :global(nav a) {
+    color: white;
+  }
+  :global(nav a):hover {
+    color: #dedede;
+  }
+  :global(.pages a) {
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+  }
+  :global(.pages a):hover {
+    background-color: rgba(255, 255, 255, 0.05);
   }
   .spacer {
     flex: 1;

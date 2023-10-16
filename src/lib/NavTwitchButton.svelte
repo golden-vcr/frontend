@@ -5,7 +5,7 @@
   export let isLoggedIn: boolean
   export let loginUrl: string
 
-  $: buttonClass = isEnabled ? 'twitch-auth-button' : 'twitch-auth-button disabled'
+  $: buttonClass = isEnabled ? '' : 'disabled'
 </script>
 
 {#if isLoggedIn}
@@ -15,8 +15,8 @@
 {/if}
 
 <style>
-  .twitch-auth-button {
-    margin-right: 1rem;
+  a {
+    margin-left: 0.25rem;
     padding: 0.25rem 1rem;
     background-color: #6441a5;
     border: 1px solid #4d3183;
@@ -25,7 +25,7 @@
     user-select: none;
     white-space: nowrap;
   }
-  .twitch-auth-button:hover {
+  a:hover {
     background-color: #4d3183;
     border-color: #6441a5;
   }
