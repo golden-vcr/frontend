@@ -33,7 +33,7 @@ html {
 }
 
 /** The navbar should sit fixed at the top of the page as it scrolls */
-nav {
+header {
   position: sticky;
   top: 0;
   left: 0;
@@ -43,7 +43,7 @@ nav {
   border-bottom: 1px solid #181818;
 }
 
-nav a {
+header a {
   color: white;
   padding: 0 0.5rem;
 }

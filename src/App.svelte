@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Router, Link, Route } from 'svelte-routing'
-  import TwitchLoginButton from './lib/TwitchLoginButton.svelte'
+  import HeaderNav from './lib/HeaderNav.svelte'
 
   import HomePage from './routes/HomePage.svelte'
   import TapesPage from './routes/TapesPage.svelte'
@@ -15,28 +15,10 @@
 
   export let url = ''
   let promise = fetchTapes()
-
-  $: showAdminLinks = $auth.state.loggedIn && $auth.state.role === 'broadcaster'
 </script>
 
 <Router {url}>
-  <nav>
-    <div class="links">
-      <Link to="/">Home</Link>
-      <Link to="/tapes">Tapes</Link>
-      <Link to="/explore">Explore</Link>
-{#if showAdminLinks}
-      <Link to="/admin">Admin</Link>
-{/if}
-    </div>
-    <div class="spacer" />
-    <TwitchLoginButton
-      loggedInUsername={$auth.state.loggedIn ? $auth.state.user.displayName : ''}
-      profileImageUrl={$auth.state.loggedIn ? $auth.state.profileImageUrl : ''}
-      loginUrl={$auth.isPending ? '' : $auth.loginUrl}
-      enableButtons={!$auth.isPending}
-    />
-  </nav>
+  <HeaderNav />
   <main>
 {#if !$auth.state.loggedIn && !!$auth.state.error}
     <div class="error">
@@ -61,10 +43,6 @@
 </Router>
 
 <style>
-  nav {
-    display: flex;
-    align-items: center;
-  }
   .error {
     border: 2px solid #aa0000;
     background-color: #ffaaaa;
@@ -73,11 +51,5 @@
     margin-bottom: 0;
     padding: 0.2rem 1rem;
     margin-right: 1rem;
-  }
-  .links {
-    padding: 1rem;
-  }
-  .spacer {
-    flex: 1;
   }
 </style>
