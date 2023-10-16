@@ -43,5 +43,6 @@
   }
   .separator {
     margin: 0 0.5rem;
+    border-top: 2px solid rgba(255, 255, 255, 0.25);
   }
 </style>

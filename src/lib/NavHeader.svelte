@@ -19,7 +19,15 @@
   </div>
 {#if isMenuOpen}
   <div class="menu">
-    <div tabindex="0" role="button" class="menu-close-bar" on:click={closeMenu} on:keypress={closeMenu} />
+    <div
+      tabindex="0"
+      role="button"
+      class="menu-close-bar"
+      on:click={closeMenu}
+      on:keypress={closeMenu}
+    >
+      {'\u2716'}
+    </div>
     <div class="menu-content">
       <NavContent onClick={closeMenu} {showAdminLinks} isVertical />
     </div>
@@ -70,12 +78,35 @@
   }
   .menu-close-bar {
     flex: 0 0 56px;
+    user-select: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    padding-right: 1rem;
   }
   .menu-close-bar, .menu-content {
     background-color: rgba(0, 0, 0, 0.8);
   }
   .menu-content {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+  :global(.menu-content .pages) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  :global(.menu-content .pages a) {
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  :global(.menu-content a) {
+    color: white;
   }
   @media only screen and (max-width: 420px) {
     nav {
