@@ -27,4 +27,9 @@
       display: none;
     }
   }
+  @media only screen and (max-width: 420px) {
+    span {
+      display: block;
+    }
+  }
 </style>

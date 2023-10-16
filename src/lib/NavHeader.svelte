@@ -1,38 +1,30 @@
 <script lang="ts">
-  import NavLink from './NavLink.svelte'
-  import NavProfile from './NavProfile.svelte'
-  import NavTwitchButton from './NavTwitchButton.svelte'
-
-  import { auth } from '../auth'
+  import NavContent from './NavContent.svelte'
 
   export let showAdminLinks: boolean
+
+  let isMenuOpen = false
+  const toggleMenu = () => { isMenuOpen = !isMenuOpen }
+  const closeMenu = () => { isMenuOpen = false }
 </script>
 
 <header>
   <nav>
-    <div class="pages">
-      <NavLink to="/">Home</NavLink>
-      <NavLink to="/tapes">Tapes</NavLink>
-      <NavLink to="/explore">Explore</NavLink>
-{#if showAdminLinks}
-      <NavLink to="/admin">Admin</NavLink>
-{/if}
-    </div>
-    <div class="spacer" />
-{#if $auth.state.loggedIn}
-    <NavLink to="/profile">
-      <NavProfile
-        twitchDisplayName={$auth.state.user.displayName}
-        twitchProfileImageUrl={$auth.state.profileImageUrl}
-      />
-    </NavLink>
-{/if}
-    <NavTwitchButton
-      isEnabled={!$auth.isPending}
-      isLoggedIn={$auth.state.loggedIn}
-      loginUrl={$auth.isPending ? '' : $auth.loginUrl}
-    />
+    <NavContent onClick={closeMenu} {showAdminLinks} />
   </nav>
+  <div class="menu-toggle">
+    <button on:click={toggleMenu}>
+      {'\u2630'}
+    </button>
+  </div>
+{#if isMenuOpen}
+  <div class="menu">
+    <div tabindex="0" role="button" class="menu-close-bar" on:click={closeMenu} on:keypress={closeMenu} />
+    <div class="menu-content">
+      <NavContent onClick={closeMenu} {showAdminLinks} isVertical />
+    </div>
+  </div>
+{/if}
 </header>
 
 <style>
@@ -58,7 +50,39 @@
   :global(.pages a):hover {
     background-color: rgba(255, 255, 255, 0.05);
   }
-  .spacer {
+  .menu-toggle {
+    display: none;
+  }
+  .menu-toggle button {
+    line-height: 1;
+    font-size: 1.25rem;
+    padding: 0.6em 0.8em;
+    margin: 0.25rem;
+  }
+  .menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+  }
+  .menu-close-bar {
+    flex: 0 0 56px;
+  }
+  .menu-close-bar, .menu-content {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  .menu-content {
     flex: 1;
+  }
+  @media only screen and (max-width: 420px) {
+    nav {
+      display: none;
+    }
+    .menu-toggle, .menu {
+      display: flex;
+    }
   }
 </style>

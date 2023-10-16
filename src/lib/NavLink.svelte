@@ -2,16 +2,12 @@
   import { Link } from "svelte-routing"
 
   export let to: string
-  export let onClick: (() => void) | undefined = undefined
+  export let onClick: () => void
 </script>
 
 <Link
   {to}
-  on:click={() => {
-    if (onClick) {
-      onClick()
-    }
-  }}
+  on:click={onClick}
 >
   <slot />
 </Link>
