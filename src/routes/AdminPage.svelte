@@ -2,7 +2,6 @@
   import { writable } from 'svelte/store'
 
   import { authorizedFetch } from '../auth'
-    import { onMount } from 'svelte';
 
   const lines = writable([] as string[])
 
@@ -32,10 +31,6 @@
         lines.update((prev) => prev.concat([`[${requestId}] ERROR: ${err}`]))
       })
   }
-
-  onMount(() => {
-    clearTape()
-  })
 </script>
 
 <div class="container">

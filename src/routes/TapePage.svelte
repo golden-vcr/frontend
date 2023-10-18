@@ -5,6 +5,7 @@
   
   export let promise: Promise<Tape[]>
   export let tapeId: number
+  export let showAdminLinks: boolean
   const tapePromise = promise.then((tapes) => {
     const found = tapes.find((x) => x.id === tapeId)
     if (!found) {
@@ -17,7 +18,7 @@
 {#await tapePromise}
 <p style="text-align: center">Loading...</p>
 {:then tape}
-<TapeDetails tape={tape} />
+<TapeDetails tape={tape} {showAdminLinks} />
 {:catch error}
 <p>{error.toString()}</p>
 {/await}

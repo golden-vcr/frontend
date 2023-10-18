@@ -31,7 +31,7 @@
       <TapesPage promise={promise} />
     </Route>
     <Route path="/tapes/:tapeId" let:params>
-      <TapePage promise={promise} tapeId={parseInt(params.tapeId)} />
+      <TapePage promise={promise} tapeId={parseInt(params.tapeId)} {showAdminLinks} />
     </Route>
     <Route path="/explore">
       <ExplorePage promise={promise} />

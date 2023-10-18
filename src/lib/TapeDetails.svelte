@@ -1,10 +1,36 @@
 <script lang="ts">  
   import { type Tape } from '../tapes/index'
+  import { authorizedFetch } from '../auth'
 
   import Tag from './Tag.svelte'
   import ImageGallery from './ImageGallery.svelte'
 
   export let tape: Tape
+  export let showAdminLinks: boolean
+
+  let isActivating = false
+  let tapeActivationMessage = ''
+  function activateTape(tapeId: number) {
+    isActivating = true
+    authorizedFetch(`/api/showtime/admin/tape/${tapeId}`, { method: 'POST' })
+      .then((r) => {
+        isActivating = false
+        tapeActivationMessage = ''
+        if (r.status == 204) {
+          tapeActivationMessage = 'Tape activated!'
+        } else {
+          r.text().then((text) => {
+            tapeActivationMessage = `Got response ${r.status}: ${text}`
+          }).catch(() => {
+            tapeActivationMessage = `Got response ${r.status}`
+          })
+        }
+      })
+      .catch((err) => {
+        isActivating = false
+        tapeActivationMessage = `ERROR: ${err}`
+      })
+  }
 </script>
 
 <div class="container">
@@ -19,6 +45,12 @@
     {tape.runtime ? `${tape.runtime} minutes` : 'Unknown runtime'},
     {tape.year ? `${tape.year}` : 'unknown year'}
   </div>
+{#if showAdminLinks}
+  <div class="admin-controls">
+    <button disabled={isActivating} on:click={() => activateTape(tape.id)}>Activate Tape {tape.id}</button>
+    <p>{tapeActivationMessage}</p>
+  </div>
+{/if}
   <ImageGallery images={tape.images} />
 </div>
 
@@ -38,6 +70,14 @@
   h1 {
     font-size: 1.75rem;
     line-height: 1.0;
+    margin: 0;
+  }
+  .admin-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .admin-controls p {
     margin: 0;
   }
   @media only screen and (max-width: 696px) {
