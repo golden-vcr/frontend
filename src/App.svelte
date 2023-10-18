@@ -6,6 +6,7 @@
   import TapesPage from './routes/TapesPage.svelte'
   import TapePage from './routes/TapePage.svelte'
   import ExplorePage from './routes/ExplorePage.svelte'
+  import BroadcastPage from './routes/BroadcastPage.svelte'
   import AdminPage from './routes/AdminPage.svelte'
   import ProfilePage from './routes/ProfilePage.svelte'
 
@@ -35,6 +36,9 @@
     </Route>
     <Route path="/explore">
       <ExplorePage promise={promise} />
+    </Route>
+    <Route path="/broadcasts/:broadcastId" let:params>
+      <BroadcastPage tapesPromise={promise} broadcastId={parseInt(params.broadcastId)} />
     </Route>
     <Route path="/admin">
       <AdminPage />
