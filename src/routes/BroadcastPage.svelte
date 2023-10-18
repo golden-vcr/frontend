@@ -1,20 +1,15 @@
 <script lang="ts">
   import { fetchBroadcastHistory } from '../history'
-  import { type Tape } from '../tapes/index'
+  import { tapes } from '../tapes/index'
 
-  // TODO: Refactor tape data into a global store; nesting promises is gross
   export let broadcastId: number
-  export let tapesPromise: Promise<Tape[]>
-  const broadcastPromise = fetchBroadcastHistory(broadcastId)
+  const promise = fetchBroadcastHistory(broadcastId)
 </script>
 
 <div>
-{#await broadcastPromise}
+{#await promise}
 <p style="text-align: center">Loading...</p>
 {:then broadcast}
-{#await tapesPromise}
-<p style="text-align: center">Loading...</p>
-{:then tapes}
 <p>Broadcast {broadcast.id}:</p>
 <ul>
   <li><b>Started at:</b> {broadcast.startedAt.toLocaleString()}</li>
@@ -27,18 +22,15 @@
   <li>Screened {broadcast.screenings.length} tape{broadcast.screenings.length === 1 ? '' : 's'}:</li>
   <ul>
 {#each broadcast.screenings as screening}
-    <li>{screening.tapeId}: {tapes.find((x) => x.id === screening.tapeId)?.title || '<unknown tape>'}</li>
+    <li>{screening.tapeId}: {$tapes.tapes.find((x) => x.id === screening.tapeId)?.title || '<unknown tape>'}</li>
 {/each}
   </ul>
 {:else}
   <li>No tapes screened.</li>
 {/if}
 </ul>
-{:catch tapesError}
-<p>{tapesError.toString()}</p>
-{/await}
-{:catch broadcastError}
-<p>{broadcastError.toString()}</p>
+{:catch error}
+<p>{error.toString()}</p>
 {/await}
 </div>
 

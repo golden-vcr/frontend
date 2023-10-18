@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
   import { Router, Route } from 'svelte-routing'
   import NavHeader from './lib/NavHeader.svelte'
 
@@ -10,13 +11,16 @@
   import AdminPage from './routes/AdminPage.svelte'
   import ProfilePage from './routes/ProfilePage.svelte'
 
-  import { fetchTapes } from './tapes'
+  import { initTapes } from './tapes'
   import { auth } from './auth'
+
+  onMount(() => {
+    initTapes()
+  })
 
   $: showAdminLinks = $auth.state.loggedIn && $auth.state.role === 'broadcaster'
 
   export let url = ''
-  let promise = fetchTapes()
 </script>
 
 <Router {url}>
@@ -29,16 +33,16 @@
 {/if}
     <Route path="/" component={HomePage} />
     <Route path="/tapes">
-      <TapesPage promise={promise} />
+      <TapesPage />
     </Route>
     <Route path="/tapes/:tapeId" let:params>
-      <TapePage promise={promise} tapeId={parseInt(params.tapeId)} {showAdminLinks} />
+      <TapePage tapeId={parseInt(params.tapeId)} {showAdminLinks} />
     </Route>
     <Route path="/explore">
-      <ExplorePage promise={promise} />
+      <ExplorePage />
     </Route>
     <Route path="/broadcasts/:broadcastId" let:params>
-      <BroadcastPage tapesPromise={promise} broadcastId={parseInt(params.broadcastId)} />
+      <BroadcastPage broadcastId={parseInt(params.broadcastId)} />
     </Route>
     <Route path="/admin">
       <AdminPage />

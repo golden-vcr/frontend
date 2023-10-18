@@ -1,16 +1,14 @@
 <script lang="ts">  
   import TapeBrowser from '../lib/TapeBrowser.svelte'
-  import { type Tape } from '../tapes/index'
-  
-  export let promise: Promise<Tape[]>
+  import { tapes } from '../tapes'
 </script>
 
 <div>
-{#await promise}
+{#if $tapes.isLoading}
   <p style="text-align: center">Loading...</p>
-{:then tapes}
-  <TapeBrowser tapes={tapes} condensed={false} byCategory={false} />
-{:catch error}
-  <p>{error.toString()}</p>
-{/await}
+{:else if $tapes.error}
+  <p>{$tapes.error.toString()}</p>
+{:else}
+  <TapeBrowser tapes={$tapes.tapes} condensed={false} byCategory={false} />
+{/if}
 </div>

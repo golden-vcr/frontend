@@ -1,3 +1,5 @@
+import { writable } from "svelte/store"
+
 import { fetchCatalogListing, type CatalogListing } from "./api"
 
 export type Tape = {
@@ -19,7 +21,26 @@ export type TapeImage = {
   displayRotatedCW: boolean
 }
 
-export async function fetchTapes(): Promise<Tape[]> {
+type TapeStore = {
+  isLoading: boolean
+  tapes: Tape[]
+  error: string
+}
+
+export const tapes = writable({ isLoading: true, tapes: [], error: "" } as TapeStore)
+
+export function initTapes() {
+  fetchTapes()
+    .then((values) => {
+      tapes.set({ isLoading: false, tapes: values, error: "" })
+    })
+    .catch((err) => {
+      const message = (err instanceof Error) ? err.message : String(err)
+      tapes.update((prev) => ({ ...prev, error: message }))
+    })
+}
+
+async function fetchTapes(): Promise<Tape[]> {
   return buildTapes(await fetchCatalogListing())
 }
 

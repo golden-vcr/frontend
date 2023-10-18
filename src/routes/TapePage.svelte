@@ -1,24 +1,19 @@
 <script lang="ts">
   import { navigate } from 'svelte-routing'
   import TapeDetails from '../lib/TapeDetails.svelte'
-  import { type Tape } from '../tapes/index'
-  
-  export let promise: Promise<Tape[]>
+  import { tapes } from '../tapes'
+
   export let tapeId: number
   export let showAdminLinks: boolean
-  const tapePromise = promise.then((tapes) => {
-    const found = tapes.find((x) => x.id === tapeId)
-    if (!found) {
-      throw navigate('/')
-    }
-    return found
-  })
+  $: tape = $tapes.tapes.find((x) => x.id === tapeId)
 </script>
 
-{#await tapePromise}
+{#if $tapes.isLoading}
 <p style="text-align: center">Loading...</p>
-{:then tape}
+{:else if $tapes.error}
+<p>{$tapes.error.toString()}</p>
+{:else if tape}
 <TapeDetails tape={tape} {showAdminLinks} />
-{:catch error}
-<p>{error.toString()}</p>
-{/await}
+{:else}
+{navigate('/')}
+{/if}
