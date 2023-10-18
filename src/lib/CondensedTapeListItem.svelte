@@ -23,6 +23,13 @@
   }}
 >
   <img src={tape.thumbnailImage} alt={`Preview image for tape ${tape.id}`} loading="lazy" />
+{#if tape.broadcastIds.length > 0}
+  <div class="screened-overlay" style={`background-color: ${tape.color}`}>
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="0,0 64,0 64,64" fill="#242424" stroke="none" />
+    </svg>
+  </div>
+{/if}
 {#if hovered || focused}
   <div class="overlay">
     <p style={`background-color: ${tape.color}88`}>{tape.title}</p>
@@ -38,6 +45,14 @@
     justify-content: center;
     position: relative;
     cursor: pointer;
+  }
+  .screened-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 64px;
+    height: 64px;
+    pointer-events: none;
   }
   img {
     max-width: 100%;
