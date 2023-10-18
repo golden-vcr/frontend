@@ -36,7 +36,7 @@
       <TapesPage />
     </Route>
     <Route path="/tapes/:tapeId" let:params>
-      <TapePage tapeId={parseInt(params.tapeId)} {showAdminLinks} />
+      <TapePage tapeId={parseInt(params.tapeId)} />
     </Route>
     <Route path="/explore">
       <ExplorePage />

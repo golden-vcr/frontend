@@ -2,10 +2,11 @@
   import { navigate } from 'svelte-routing'
   import TapeDetails from '../lib/TapeDetails.svelte'
   import { tapes } from '../tapes'
+  import { auth } from '../auth'
 
   export let tapeId: number
-  export let showAdminLinks: boolean
   $: tape = $tapes.tapes.find((x) => x.id === tapeId)
+  $: showAdminControls = $auth.state.loggedIn && $auth.state.role === 'broadcaster'
 </script>
 
 {#if $tapes.isLoading}
@@ -13,7 +14,7 @@
 {:else if $tapes.error}
 <p>{$tapes.error.toString()}</p>
 {:else if tape}
-<TapeDetails tape={tape} {showAdminLinks} />
+<TapeDetails tape={tape} {showAdminControls} />
 {:else}
 {navigate('/')}
 {/if}

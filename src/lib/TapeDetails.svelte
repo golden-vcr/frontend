@@ -6,7 +6,7 @@
   import ImageGallery from './ImageGallery.svelte'
 
   export let tape: Tape
-  export let showAdminLinks: boolean
+  export let showAdminControls: boolean
 
   let isActivating = false
   let tapeActivationMessage = ''
@@ -45,7 +45,7 @@
     {tape.runtime ? `${tape.runtime} minutes` : 'Unknown runtime'},
     {tape.year ? `${tape.year}` : 'unknown year'}
   </div>
-{#if showAdminLinks}
+{#if showAdminControls}
   <div class="admin-controls">
     <button disabled={isActivating} on:click={() => activateTape(tape.id)}>Activate Tape {tape.id}</button>
     <p>{tapeActivationMessage}</p>
