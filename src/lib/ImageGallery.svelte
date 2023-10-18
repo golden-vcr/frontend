@@ -3,34 +3,37 @@
   export let images: TapeImage[]
 </script>
 
-<div
-  class="container"
-  on:wheel={(e) => {
-    if (e.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
-      if (e.deltaX === 0 && e.deltaZ === 0 && e.deltaY !== 0) {
-        e.preventDefault()
-        e.currentTarget.scrollBy(e.deltaY, 0)
-      }
-    }
-  }
-}>
+<div class="container">
 {#each images as image}
-  <img src={image.url} alt={image.alt} />
+  <div class="frame" style={`width: ${image.width}px`}>
+    <img src={image.url} alt={image.alt} />
+  </div>
 {/each}
 </div>
 
 <style>
   .container {
+    margin-top: 0.75em;
     flex: 1;
-    background-color: #101010;
-    border-top: 2px solid #363636;
-    border-bottom: 2px solid #363636;
-    padding: 20px;
-    gap: 20px;
-    overflow-x: scroll;
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .frame {
+    max-width: 100%;
+    max-height: 100%;
   }
   img {
-    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+  }
+  @media only screen and (max-width: 696px) {
+    .container {
+      gap: 0.2rem;
+      padding: 0;
+    }
   }
 </style>
