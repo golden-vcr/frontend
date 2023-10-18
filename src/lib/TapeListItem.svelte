@@ -47,6 +47,13 @@
         <i>Unknown runtime</i>
 {/if}
       </li>
+      <li>
+{#if tape.broadcastIds.length > 0}
+        <b>Last screened in:</b> <Link to={`/broadcasts/${tape.broadcastIds[tape.broadcastIds.length - 1]}`}>Broadcast {tape.broadcastIds[tape.broadcastIds.length - 1]}</Link>
+{:else}
+        <em>Never screened</em>
+{/if}
+      </li>
     </ul>
   </div>
 </div>
@@ -92,11 +99,12 @@
       height: 260px;
     }
     .title {
-      font-size: 1.25rem;
+      font-size: 1.125rem;
     }
     ul {
       margin: 0;
+      padding-left: 1rem;
+      font-size: 0.75rem;
     }
   }
 </style>
-

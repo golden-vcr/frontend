@@ -1,6 +1,7 @@
 import { writable } from "svelte/store"
 
 import { fetchCatalogListing, type CatalogListing } from "./api"
+import { fetchBroadcastSummary, type Summary } from "../history"
 
 export type Tape = {
   id: number
@@ -11,6 +12,7 @@ export type Tape = {
   thumbnailImage: string
   images: TapeImage[]
   tags: string[]
+  broadcastIds: number[]
 }
 
 export type TapeImage = {
@@ -41,10 +43,11 @@ export function initTapes() {
 }
 
 async function fetchTapes(): Promise<Tape[]> {
-  return buildTapes(await fetchCatalogListing())
+  const [catalogListing, broadcastSummary] = await Promise.all([fetchCatalogListing(), fetchBroadcastSummary()])
+  return buildTapes(catalogListing, broadcastSummary)
 }
 
-function buildTapes(catalogListing: CatalogListing): Tape[] {
+function buildTapes(catalogListing: CatalogListing, broadcastSummary: Summary): Tape[] {
   const tapes = [] as Tape[]
   for (const item of catalogListing.items) {
     tapes.push({
@@ -62,6 +65,7 @@ function buildTapes(catalogListing: CatalogListing): Tape[] {
         displayRotatedCW: data.rotated,
       })),
       tags: item.tags,
+      broadcastIds: broadcastSummary.broadcastIdsByTapeId[String(item.id)] || [],
     })
   }
   return tapes
