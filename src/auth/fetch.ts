@@ -93,14 +93,12 @@ export class AuthorizedFetcher {
     // to the list - no need to make multiple concurrent requests with an expired access
     // token, and we only want to initiate a single refresh, not one for each 401
     if (this.refreshCallbacks.length > 0) {
-      console.log(`${input} will be fetched upon refresh`)
       return this.fetchUponRefresh(input, init)
     }
 
     // If we don't yet have any AuthState cached, the app is still initializing and
     // determining whether it's logged in - hold off until that initialization finishes
     if (!this.currentState) {
-      console.log(`${input} will be fetched upon init`)
       return this.fetchUponInit(input, init)
     }
 
@@ -112,7 +110,6 @@ export class AuthorizedFetcher {
 
     // We're logged in with a presumably-valid access token, and no refreshes are in
     // progress: initiate the request, and if we hit a 401, initiate a refresh
-    console.log(`${input} is being fetched immediately`)
     const accessToken = this.currentState.tokens.accessToken
     return this.handleFetch(true, accessToken, input, init)
   }
@@ -187,7 +184,6 @@ export class AuthorizedFetcher {
     // Make the request, and return the response directly unless we get a 401 error and
     // we're permitted to refresh
     const r = await fetch(input, init)
-    console.log(`${input} got ${r.status}`)
     if (!allowRefresh || r.status !== 401) {
       return r
     }
@@ -195,7 +191,6 @@ export class AuthorizedFetcher {
     // We got a 401 and we want to refresh: if there's not currently a refresh in
     // progress, we want to initiate one
     if (this.refreshCallbacks.length === 0) {
-      console.log(`${input} is initiating refresh`)
       if (!this.currentState) {
         throw new UnauthorizedFetchError("Unable to initiate refresh: not initialized")
       }
@@ -205,7 +200,6 @@ export class AuthorizedFetcher {
       this.startRefresh(this.currentState.tokens.refreshToken)
     }
 
-    console.log(`${input} will be fetched upon refresh`)
     return this.fetchUponRefresh(input, init)
   }
 }
