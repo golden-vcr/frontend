@@ -70,7 +70,9 @@ export async function createLedgerNotificationsSource(init: { onTransaction: (it
     } catch (err) {
       init.onError((err instanceof Error) ? err : new Error(String(err)))
     }
-    init.onTransaction(item as LedgerTransaction)
+    if (item) {
+      init.onTransaction(item)
+    }
   })
   return source  
 }

@@ -4,6 +4,7 @@
   import NavHeader from './lib/NavHeader.svelte'
 
   import HomePage from './routes/HomePage.svelte'
+  import AboutPage from './routes/AboutPage.svelte'
   import TapesPage from './routes/TapesPage.svelte'
   import TapePage from './routes/TapePage.svelte'
   import ExplorePage from './routes/ExplorePage.svelte'
@@ -32,6 +33,7 @@
     </div>
 {/if}
     <Route path="/" component={HomePage} />
+    <Route path="/about" component={AboutPage} />
     <Route path="/tapes">
       <TapesPage />
     </Route>
