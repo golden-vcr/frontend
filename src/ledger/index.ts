@@ -1,12 +1,11 @@
 import { writable } from 'svelte/store'
 import { auth } from '../auth'
 
-import { fetchLedgerBalance, fetchLedgerTransactionHistory, type LedgerBalance, type LedgerTransaction, type LedgerTransactionState } from './api'
+import { fetchLedgerBalance, type LedgerBalance } from './api'
 
 export { type LedgerBalance, type LedgerTransactionHistory, type LedgerTransaction, type LedgerTransactionState } from './api'
 
-// Use a global store to keep track of our balances for the logged-in user, or null if
-// we have no logged-in user
+// Use a global store to keep track of our balances for the logged-in user
 type BalanceStore = {
   state: 'unauthenticated'
 } | {
@@ -20,6 +19,17 @@ export const balance = writable({state: 'unauthenticated'} as BalanceStore)
 
 // Keep track of whether we've loaded ledger state post-login
 let isLoggedIn = false
+
+export async function refreshBalance() {
+  if (isLoggedIn) {
+    fetchLedgerBalance().then((value) => {
+      balance.update((prev) => ({
+        ...prev,
+        value,
+      }))
+    })
+  }
+}
 
 auth.subscribe((value) => {
   if (value.state.loggedIn) {
