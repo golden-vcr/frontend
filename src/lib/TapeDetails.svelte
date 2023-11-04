@@ -57,7 +57,6 @@
 <style>
   .container {
     flex: 1;
-    padding: 2rem;
     display: flex;
     flex-direction: column;
   }
@@ -82,7 +81,7 @@
   }
   @media only screen and (max-width: 696px) {
     .container {
-      padding: 1.5rem;
+      padding: 0.5rem;
     }
     h1 {
       font-size: 1.5rem;

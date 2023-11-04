@@ -33,9 +33,3 @@
 <p>{error.toString()}</p>
 {/await}
 </div>
-
-<style>
-  div {
-    padding: 2rem;
-  }
-</style>

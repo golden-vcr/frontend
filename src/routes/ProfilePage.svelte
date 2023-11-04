@@ -27,12 +27,3 @@
 {/if}
 
 </div>
-
-<style>
-  div {
-    padding: 2rem;
-  }
-  p {
-    margin-top: 0;
-  }
-</style>

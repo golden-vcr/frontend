@@ -46,8 +46,18 @@ header {
 /** The main content of the page should occupy the remaining space */
 main {
   flex: 1;
+  padding: 2rem;
 }
 
+main :first-child {
+  margin-top: 0;
+}
+
+@media only screen and (max-width: 696px) {
+  main {
+    padding: 0.5rem;
+  }
+}
 
 
 

@@ -51,14 +51,8 @@
 
 <style>
   .container {
-    padding: 2rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-  }
-  @media only screen and (max-width: 696px) {
-    .container {
-      padding: 0.5rem;
-    }
   }
 </style>

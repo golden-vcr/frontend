@@ -36,9 +36,3 @@
 {:else}
   <AboutContent />
 {/if}
-
-<style>
-  div {
-    padding: 2rem;
-  }
-</style>
