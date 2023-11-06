@@ -12,12 +12,10 @@
   import AdminPage from './routes/AdminPage.svelte'
   import ProfilePage from './routes/ProfilePage.svelte'
 
-  import { initTapes } from './tapes'
-  import { auth } from './auth'
-
+    import { auth } from './auth'
   import './state'
-
   import { errors, acknowledgeErrors } from './state/errors'
+  import { initTapes } from './state/tapes'
 
   onMount(() => {
     initTapes()

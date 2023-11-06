@@ -4,8 +4,8 @@
 
   import { createBroadcastStateSource, type BroadcastState } from '../apis/showtime/state'
 
-  import { tapes } from '../tapes'
   import { auth } from '../auth'
+  import { tapes } from '../state/tapes'
   import { balance } from '../state/balance'
 
   import AboutContent from '../lib/AboutContent.svelte'
@@ -16,7 +16,7 @@
   let source = null as EventSource | null
   let errorMessage = ''
   
-  $: currentTape = (state.isLive && !!state.screeningTapeId) ? ($tapes.tapes.find((x) => state.isLive && x.id === state.screeningTapeId) || null) : null
+  $: currentTape = (state.isLive && !!state.screeningTapeId) ? ($tapes.find((x) => state.isLive && x.id === state.screeningTapeId) || null) : null
 
   onMount(() => {
     source = createBroadcastStateSource({

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Link } from 'svelte-routing'
-  import { type Tape } from '../tapes/index'
+  import { type Tape } from '../state/tapes'
 
   import TapeThumbnail from './TapeThumbnail.svelte'
   import Tag from './Tag.svelte'

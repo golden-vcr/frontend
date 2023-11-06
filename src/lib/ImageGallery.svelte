@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type TapeImage } from '../tapes'
+  import { type TapeImage } from '../state/tapes'
   export let images: TapeImage[]
 </script>
 

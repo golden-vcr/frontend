@@ -1,6 +1,6 @@
-import type { Summary, Broadcast, Screening } from './types'
+import type { BroadcastSummary, Broadcast, Screening } from './types'
 
-export function parseSummary(data: unknown): Summary {
+export function parseBroadcastSummary(data: unknown): BroadcastSummary {
   if (typeof data !== "object") {
     throw new Error("invalid broadcast summary: data is not an object")
   }

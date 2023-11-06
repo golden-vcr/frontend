@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type Tape } from '../tapes'
+  import { type Tape } from '../state/tapes'
   
   import TagHeading from './TagHeading.svelte'
   import CondensedTapeList from './CondensedTapeList.svelte'

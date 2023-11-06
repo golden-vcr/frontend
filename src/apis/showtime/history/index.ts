@@ -1,9 +1,9 @@
-import type { Summary, Broadcast } from './types'
-import { parseSummary, parseBroadcast } from './parse'
+import type { BroadcastSummary, Broadcast } from './types'
+import { parseBroadcastSummary, parseBroadcast } from './parse'
 
 export * from './types'
 
-export async function fetchBroadcastSummary(): Promise<Summary> {
+export async function fetchBroadcastSummary(): Promise<BroadcastSummary> {
   const url = '/api/showtime/history'
   const r = await fetch(url)
   if (!r.ok) {
@@ -16,10 +16,10 @@ export async function fetchBroadcastSummary(): Promise<Summary> {
     throw new Error(`Got ${r.status} response from ${url}${suffix}`)
   }
   const data = await r.json()
-  return parseSummary(data)
+  return parseBroadcastSummary(data)
 }
 
-export async function fetchBroadcastHistory(broadcastId: number): Promise<Broadcast> {
+export async function fetchBroadcast(broadcastId: number): Promise<Broadcast> {
   const url = `/api/showtime/history/${broadcastId}`
   const r = await fetch(url)
   if (!r.ok) {

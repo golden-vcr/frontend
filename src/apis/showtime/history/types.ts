@@ -1,4 +1,4 @@
-export type Summary = {
+export type BroadcastSummary = {
   broadcastIdsByTapeId: { [key: string]: number[] }
 }
 

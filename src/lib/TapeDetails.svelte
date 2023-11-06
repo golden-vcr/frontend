@@ -1,5 +1,5 @@
 <script lang="ts">  
-  import { type Tape } from '../tapes/index'
+  import { type Tape } from '../state/tapes'
   import { authorizedFetch } from '../auth'
 
   import Tag from './Tag.svelte'

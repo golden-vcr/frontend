@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from 'svelte-routing'
-  import { type Tape } from '../tapes'
+  import { type Tape } from '../state/tapes'
   export let tape: Tape
   let focused = false
   let hovered = false

@@ -1,7 +1,7 @@
 <script lang="ts">
   import TapeThumbnail from './TapeThumbnail.svelte'
 
-  import { type Tape } from '../tapes'
+  import { type Tape } from '../state/tapes'
   export let tapes: Tape[]
 </script>
 

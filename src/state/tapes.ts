@@ -1,7 +1,9 @@
-import { writable } from 'svelte/store'
+import { writable, derived } from 'svelte/store'
 
 import { fetchCatalogListing, type CatalogListing } from '../apis/tapes/catalog'
-import { fetchBroadcastSummary, type Summary } from '../apis/showtime/history'
+import { fetchBroadcastSummary, type BroadcastSummary } from '../apis/showtime/history'
+
+import { signalError } from './errors'
 
 export type Tape = {
   id: number
@@ -23,31 +25,28 @@ export type TapeImage = {
   displayRotatedCW: boolean
 }
 
-type TapeStore = {
-  isLoading: boolean
-  tapes: Tape[]
-  error: string
-}
-
-export const tapes = writable({ isLoading: true, tapes: [], error: "" } as TapeStore)
+const catalogListing = writable(null as CatalogListing | null)
+const broadcastSummary = writable(null as BroadcastSummary | null)
 
 export function initTapes() {
-  fetchTapes()
-    .then((values) => {
-      tapes.set({ isLoading: false, tapes: values, error: "" })
-    })
-    .catch((err) => {
-      const message = (err instanceof Error) ? err.message : String(err)
-      tapes.update((prev) => ({ ...prev, error: message }))
-    })
+  fetchCatalogListing().then(catalogListing.set).catch((err) => {
+    const message = (err instanceof Error) ? err.message : String(err)
+    signalError(`Failed to fetch tape listing: ${message}`)
+  })
+  fetchBroadcastSummary().then(broadcastSummary.set).catch((err) => {
+    const message = (err instanceof Error) ? err.message : String(err)
+    signalError(`Failed to fetch broadcast summary: ${message}`)
+  })
 }
 
-async function fetchTapes(): Promise<Tape[]> {
-  const [catalogListing, broadcastSummary] = await Promise.all([fetchCatalogListing(), fetchBroadcastSummary()])
-  return buildTapes(catalogListing, broadcastSummary)
-}
+export const tapes = derived([catalogListing, broadcastSummary], ([$catalogListing, $broadcastSummary]) => {
+  if ($catalogListing) {
+    return buildTapes($catalogListing, $broadcastSummary)
+  }
+  return [] as Tape[]
+}, [])
 
-function buildTapes(catalogListing: CatalogListing, broadcastSummary: Summary): Tape[] {
+function buildTapes(catalogListing: CatalogListing, broadcastSummary: BroadcastSummary | null): Tape[] {
   const tapes = [] as Tape[]
   for (const item of catalogListing.items) {
     tapes.push({
@@ -65,7 +64,7 @@ function buildTapes(catalogListing: CatalogListing, broadcastSummary: Summary): 
         displayRotatedCW: data.rotated,
       })),
       tags: item.tags,
-      broadcastIds: broadcastSummary.broadcastIdsByTapeId[String(item.id)] || [],
+      broadcastIds: broadcastSummary?.broadcastIdsByTapeId[String(item.id)] || [],
     })
   }
   return tapes

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { fetchBroadcastHistory } from '../apis/showtime/history'
-  import { tapes } from '../tapes/index'
+  import { fetchBroadcast } from '../apis/showtime/history'
+  import { tapes } from '../state/tapes'
 
   export let broadcastId: number
-  const promise = fetchBroadcastHistory(broadcastId)
+  const promise = fetchBroadcast(broadcastId)
 </script>
 
 <div>
@@ -22,7 +22,7 @@
   <li>Screened {broadcast.screenings.length} tape{broadcast.screenings.length === 1 ? '' : 's'}:</li>
   <ul>
 {#each broadcast.screenings as screening}
-    <li>{screening.tapeId}: {$tapes.tapes.find((x) => x.id === screening.tapeId)?.title || '<unknown tape>'}</li>
+    <li>{screening.tapeId}: {$tapes.find((x) => x.id === screening.tapeId)?.title || '<unknown tape>'}</li>
 {/each}
   </ul>
 {:else}
