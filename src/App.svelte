@@ -15,6 +15,10 @@
   import { initTapes } from './tapes'
   import { auth } from './auth'
 
+  import './state'
+
+  import { errors, acknowledgeErrors } from './state/errors'
+
   onMount(() => {
     initTapes()
   })
@@ -31,6 +35,14 @@
     <div class="error">
       <b>LOGIN ERROR:</b> {$auth.state.error}
     </div>
+{/if}
+{#if $errors.length > 0}
+{#each $errors as error}
+    <div class="error">
+      {error}
+    </div>
+{/each}
+    <button on:click={acknowledgeErrors}>Clear errors</button>
 {/if}
     <Route path="/" component={HomePage} />
     <Route path="/about" component={AboutPage} />

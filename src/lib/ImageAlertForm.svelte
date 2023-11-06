@@ -1,12 +1,10 @@
 <script lang="ts">
   import { authorizedFetch } from '../auth'
-  import { balance } from '../ledger'
+  import { balance } from '../state/balance'
 
   let subjectText = ''
   let submissionError = ''
   let submissionState = 'idle' as 'idle' | 'pending' | 'failed' | 'ok'
-
-  $: numPointsAvailable = $balance.state === 'loaded' ? $balance.value.availablePoints : 0
 
   async function requestImageGenerationAlert(subject: string) {
     submissionState = 'pending'
@@ -40,10 +38,10 @@
   <input
     type="text"
     bind:value={subjectText}
-    disabled={numPointsAvailable < 500}
+    disabled={$balance.numPointsAvailable < 500}
   />
   <button
-    disabled={numPointsAvailable < 500 || submissionState === 'pending' || subjectText.length <= 0 || subjectText.length > 120}
+    disabled={$balance.numPointsAvailable < 500 || submissionState === 'pending' || subjectText.length <= 0 || subjectText.length > 120}
     on:click={() => requestImageGenerationAlert(subjectText)}
   >
     Submit

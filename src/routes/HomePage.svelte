@@ -6,8 +6,8 @@
 
   import { tapes } from '../tapes'
   import { auth } from '../auth'
-  import { balance } from '../ledger'
-  
+  import { balance } from '../state/balance'
+
   import AboutContent from '../lib/AboutContent.svelte'
   import TapeListItem from '../lib/TapeListItem.svelte'
   import ImageAlertForm from '../lib/ImageAlertForm.svelte'
@@ -17,7 +17,6 @@
   let errorMessage = ''
   
   $: currentTape = (state.isLive && !!state.screeningTapeId) ? ($tapes.tapes.find((x) => state.isLive && x.id === state.screeningTapeId) || null) : null
-  $: numPointsAvailable = $balance.state === 'loaded' ? $balance.value.availablePoints : 0
 
   onMount(() => {
     source = createBroadcastStateSource({
@@ -61,7 +60,7 @@
 {#if $auth.state.loggedIn}
 <p>
   Hello, <b>{$auth.state.user.displayName}</b>! You currently have a balance of
-  <b>{numPointsAvailable}</b> Golden VCR Fun Points.
+  <b>{$balance.numPointsAvailable}</b> Golden VCR Fun Points.
 </p>
 <ImageAlertForm />
 {:else}

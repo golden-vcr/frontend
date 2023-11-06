@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { fetchLedgerTransactionHistory, createLedgerNotificationsSource, type LedgerTransaction } from '../apis/ledger/records'
-  import { refreshBalance } from '../ledger'
+  import { refreshBalance } from '../state/balance'
 
   let isLoadingInitialHistory = true
   let isFetchingNextPage = false
