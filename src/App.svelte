@@ -8,6 +8,7 @@
   import TapesPage from './routes/TapesPage.svelte'
   import TapePage from './routes/TapePage.svelte'
   import ExplorePage from './routes/ExplorePage.svelte'
+  import FavoritesPage from './routes/FavoritesPage.svelte'
   import BroadcastPage from './routes/BroadcastPage.svelte'
   import AdminPage from './routes/AdminPage.svelte'
   import ProfilePage from './routes/ProfilePage.svelte'
@@ -52,6 +53,9 @@
     </Route>
     <Route path="/explore">
       <ExplorePage />
+    </Route>
+    <Route path="/favorites">
+      <FavoritesPage />
     </Route>
     <Route path="/broadcasts/:broadcastId" let:params>
       <BroadcastPage broadcastId={parseInt(params.broadcastId)} />
