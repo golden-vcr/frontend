@@ -2,7 +2,9 @@ import { writable, derived } from 'svelte/store'
 
 import { fetchCatalogListing, type CatalogListing } from '../apis/tapes/catalog'
 import { fetchBroadcastSummary, type BroadcastSummary } from '../apis/showtime/history'
+import { fetchFavoriteTapeIds } from '../apis/tapes/favorites'
 
+import { isViewer } from './access'
 import { signalError } from './errors'
 
 export type Tape = {
@@ -15,6 +17,7 @@ export type Tape = {
   images: TapeImage[]
   tags: string[]
   broadcastIds: number[]
+  isFavorite: boolean
 }
 
 export type TapeImage = {
@@ -27,6 +30,7 @@ export type TapeImage = {
 
 const catalogListing = writable(null as CatalogListing | null)
 const broadcastSummary = writable(null as BroadcastSummary | null)
+const favoriteTapeIds = writable([] as number[])
 
 export function initTapes() {
   fetchCatalogListing().then(catalogListing.set).catch((err) => {
@@ -39,14 +43,25 @@ export function initTapes() {
   })
 }
 
-export const tapes = derived([catalogListing, broadcastSummary], ([$catalogListing, $broadcastSummary]) => {
+isViewer.subscribe((isNowViewer) => {
+  if (isNowViewer) {
+    fetchFavoriteTapeIds().then(favoriteTapeIds.set).catch((err) => {
+      const message = (err instanceof Error) ? err.message : String(err)
+      signalError(`Failed to fetch favorite tape IDs: ${message}`)
+    })
+  } else {
+    favoriteTapeIds.set([])
+  }
+})
+
+export const tapes = derived([catalogListing, broadcastSummary, favoriteTapeIds], ([$catalogListing, $broadcastSummary, $favoriteTapeIds]) => {
   if ($catalogListing) {
-    return buildTapes($catalogListing, $broadcastSummary)
+    return buildTapes($catalogListing, $broadcastSummary, $favoriteTapeIds)
   }
   return [] as Tape[]
 }, [])
 
-function buildTapes(catalogListing: CatalogListing, broadcastSummary: BroadcastSummary | null): Tape[] {
+function buildTapes(catalogListing: CatalogListing, broadcastSummary: BroadcastSummary | null, favoriteTapeIds: number[]): Tape[] {
   const tapes = [] as Tape[]
   for (const item of catalogListing.items) {
     tapes.push({
@@ -65,6 +80,7 @@ function buildTapes(catalogListing: CatalogListing, broadcastSummary: BroadcastS
       })),
       tags: item.tags,
       broadcastIds: broadcastSummary?.broadcastIdsByTapeId[String(item.id)] || [],
+      isFavorite: favoriteTapeIds.includes(item.id),
     })
   }
   return tapes

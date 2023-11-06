@@ -3,6 +3,7 @@ import { parseCatalogListing } from './parse'
 
 export * from './types'
 
+// https://golden-vcr.github.io/tapes/#/catalog/getCatalog
 export async function fetchCatalogListing(): Promise<CatalogListing> {
   const url = '/api/tapes/catalog'
   const r = await fetch(url)
