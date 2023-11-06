@@ -40,7 +40,7 @@
 <style>
   .container {
     flex: 0 0 198px;
-    aspect-ratio: 0.55;
+    height: 360px;
     display: flex;
     justify-content: center;
     position: relative;
@@ -79,6 +79,7 @@
   @media only screen and (max-width: 696px) {
     .container {
       flex-basis: 143px;
+      height: 260px;
     }
   }
 </style>

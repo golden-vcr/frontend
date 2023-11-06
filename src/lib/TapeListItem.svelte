@@ -2,24 +2,14 @@
   import { Link } from 'svelte-routing'
   import { type Tape } from '../tapes/index'
 
+  import TapeThumbnail from './TapeThumbnail.svelte'
   import Tag from './Tag.svelte'
 
   export let tape: Tape
 </script>
 
 <div class="container">
-  <div
-    class="thumbnail"
-    style={`background-color: ${tape.color}`}
-  >
-    <Link to={`/tapes/${tape.id}`}>
-      <img
-        src={tape.thumbnailImage}
-        alt={`Preview image for tape ${tape.id}`}
-        loading="lazy"
-      />
-    </Link>
-  </div>
+  <TapeThumbnail {tape} />
   <div class="info">
     <span class="title">
       <Link to={`/tapes/${tape.id}`}>{tape.title}</Link>
@@ -63,15 +53,6 @@
     display: flex;
     width: 100%;
   }
-  .thumbnail {
-    display: flex;
-    flex: 0 0 198px;
-    height: 360px;
-  }
-  .thumbnail img {
-    width: 100%;
-    height: 100%;
-  }
   .info {
     width: 100%;
     padding: 0 1rem;
@@ -94,10 +75,6 @@
     padding: 0.375rem;
   }
   @media only screen and (max-width: 696px) {
-    .thumbnail {
-      flex-basis: 143px;
-      height: 260px;
-    }
     .title {
       font-size: 1.125rem;
     }

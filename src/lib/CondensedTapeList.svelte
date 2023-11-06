@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CondensedTapeListItem from './CondensedTapeListItem.svelte'
+  import TapeThumbnail from './TapeThumbnail.svelte'
 
   import { type Tape } from '../tapes'
   export let tapes: Tape[]
@@ -7,7 +7,7 @@
 
 <div class="container">
 {#each tapes as tape}
-  <CondensedTapeListItem {tape} />
+  <TapeThumbnail {tape} />
 {/each}
 </div>
 
