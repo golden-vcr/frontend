@@ -2,7 +2,7 @@ import { writable, derived } from 'svelte/store'
 
 import { fetchCatalogListing, type CatalogListing } from '../apis/tapes/catalog'
 import { fetchBroadcastSummary, type BroadcastSummary } from '../apis/showtime/history'
-import { fetchFavoriteTapeIds } from '../apis/tapes/favorites'
+import { fetchFavoriteTapeIds, setTapeIsFavorite } from '../apis/tapes/favorites'
 
 import { isViewer } from './access'
 import { signalError } from './errors'
@@ -18,6 +18,7 @@ export type Tape = {
   tags: string[]
   broadcastIds: number[]
   isFavorite: boolean
+  onToggleFavorite: (() => void) | null
 }
 
 export type TapeImage = {
@@ -43,6 +44,26 @@ export function initTapes() {
   })
 }
 
+function updateFavoriteFlag(tapeId: number, isNowFavorite: boolean) {
+  if (isNowFavorite) {
+    favoriteTapeIds.update((prev) => {
+      const i = prev.indexOf(tapeId)
+      if (i >= 0) {
+        return prev
+      }
+      return [...prev].concat([tapeId]).sort((a, b) => a - b)
+    })
+  } else {
+    favoriteTapeIds.update((prev) => {
+      const i = prev.indexOf(tapeId)
+      if (i === -1) {
+        return prev
+      }
+      return prev.slice(0, i).concat(prev.slice(i + 1))
+    })
+  }
+}
+
 isViewer.subscribe((isNowViewer) => {
   if (isNowViewer) {
     fetchFavoriteTapeIds().then(favoriteTapeIds.set).catch((err) => {
@@ -54,14 +75,17 @@ isViewer.subscribe((isNowViewer) => {
   }
 })
 
-export const tapes = derived([catalogListing, broadcastSummary, favoriteTapeIds], ([$catalogListing, $broadcastSummary, $favoriteTapeIds]) => {
-  if ($catalogListing) {
-    return buildTapes($catalogListing, $broadcastSummary, $favoriteTapeIds)
-  }
-  return [] as Tape[]
-}, [])
+export const tapes = derived([catalogListing, broadcastSummary, favoriteTapeIds, isViewer],
+  ([$catalogListing, $broadcastSummary, $favoriteTapeIds, $isViewer]) => {
+    if ($catalogListing) {
+      return buildTapes($catalogListing, $broadcastSummary, $favoriteTapeIds, $isViewer)
+    }
+    return [] as Tape[]
+  },
+  [],
+)
 
-function buildTapes(catalogListing: CatalogListing, broadcastSummary: BroadcastSummary | null, favoriteTapeIds: number[]): Tape[] {
+function buildTapes(catalogListing: CatalogListing, broadcastSummary: BroadcastSummary | null, favoriteTapeIds: number[], isViewer: boolean): Tape[] {
   const tapes = [] as Tape[]
   for (const item of catalogListing.items) {
     tapes.push({
@@ -81,6 +105,18 @@ function buildTapes(catalogListing: CatalogListing, broadcastSummary: BroadcastS
       tags: item.tags,
       broadcastIds: broadcastSummary?.broadcastIdsByTapeId[String(item.id)] || [],
       isFavorite: favoriteTapeIds.includes(item.id),
+      onToggleFavorite: !isViewer ? null : () => {
+        const isNowFavorite = !favoriteTapeIds.includes(item.id)
+        setTapeIsFavorite(item.id, isNowFavorite)
+          .then(() => {
+            updateFavoriteFlag(item.id, isNowFavorite)
+          })
+          .catch((err) => {
+            const message = (err instanceof Error) ? err.message : String(err)
+            const desc = isNowFavorite ? `mark tape ${item.id} as a favorite` : `remove favorite flag from tape ${item.id}`
+            signalError(`Failed to ${desc}: ${message}`)
+          })
+      },
     })
   }
   return tapes

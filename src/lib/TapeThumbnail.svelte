@@ -35,6 +35,16 @@
     <p style={`background-color: ${tape.color}88`}>{tape.title}</p>
   </div>
 {/if}
+{#if tape.onToggleFavorite !== null}
+  <button class={`heart${tape.isFavorite ? ' favorited' : ''}`} on:click={(e) => {
+    if (tape.onToggleFavorite) {
+      e.stopPropagation()
+      tape.onToggleFavorite()
+    }
+  }}>
+    {tape.isFavorite ? '\u2665' : '\u2661'}
+  </button>
+{/if}
 </div>
 
 <style>
@@ -53,6 +63,29 @@
     width: 64px;
     height: 64px;
     pointer-events: none;
+  }
+  button.heart {
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    color: #cccccc99;
+    background-color: #24242433;
+    border-width: 0;
+    border-radius: 0.25rem;
+    padding: 0 0.25rem;
+    margin: 0;
+    font-size: 2rem;
+    line-height: 1.0;
+  }
+  button.heart.favorited {
+    color: #fff;
+    background-color: #24242499;
+  }
+  button.heart:hover {
+    color: #fff;
+  }
+  button.heart.favorited:hover {
+    color: #ccc;
   }
   img {
     max-width: 100%;
