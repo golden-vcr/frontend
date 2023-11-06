@@ -1,16 +1,14 @@
-import { writable } from "svelte/store"
-import { navigate } from "svelte-routing"
+import { writable } from 'svelte/store'
+import { navigate } from 'svelte-routing'
 
-import { config } from "../config"
+import { config } from '../config'
+import { initiateLogin, initiateLogout, initiateRefresh, type AuthState } from '../apis/auth/authentication'
 
-import { type AuthState } from "./types"
-import { AuthorizedFetcher } from "./fetch"
-import { restoreAuthState, cacheAuthState, clearAuthState } from "./storage"
-import { generateCsrfToken, cacheCsrfToken, validateCsrfToken } from "./csrf"
-import { initiateLogin, initiateLogout, initiateRefresh } from "./api"
+import { AuthorizedFetcher } from './fetch'
+import { restoreAuthState, cacheAuthState, clearAuthState } from './storage'
+import { generateCsrfToken, cacheCsrfToken, validateCsrfToken } from './csrf'
 
-export { type AuthState } from "./types"
-export { type UnauthorizedFetchError } from "./fetch"
+export { type UnauthorizedFetchError } from './fetch'
 
 // Initialize a store that will hold our current auth state: any time we get a new
 // response from any of our API's auth endpoints, we'll update auth.state. When the app

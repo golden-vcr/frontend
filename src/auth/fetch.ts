@@ -1,4 +1,4 @@
-import { type AuthState } from './types'
+import { type AuthState } from '../apis/auth/authentication'
 
 /**
  * Error thrown to indicate that at call made to authorizedFetch() could not be

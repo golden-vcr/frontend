@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { fetchLedgerTransactionHistory, createLedgerNotificationsSource, type LedgerTransaction } from '../ledger/api'
+  import { fetchLedgerTransactionHistory, createLedgerNotificationsSource, type LedgerTransaction } from '../apis/ledger/records'
   import { refreshBalance } from '../ledger'
 
   let isLoadingInitialHistory = true

@@ -2,10 +2,12 @@
   import { onMount } from 'svelte'
   import { Link } from 'svelte-routing'
 
-  import { createBroadcastStateSource, type BroadcastState } from '../broadcast'
+  import { createBroadcastStateSource, type BroadcastState } from '../apis/showtime/state'
+
   import { tapes } from '../tapes'
   import { auth } from '../auth'
   import { balance } from '../ledger'
+  
   import AboutContent from '../lib/AboutContent.svelte'
   import TapeListItem from '../lib/TapeListItem.svelte'
   import ImageAlertForm from '../lib/ImageAlertForm.svelte'

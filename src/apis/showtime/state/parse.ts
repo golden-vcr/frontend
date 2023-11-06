@@ -1,32 +1,6 @@
-export type BroadcastState = {
-  isLive: false
-} | {
-  isLive: true
-  broadcastStartedAt: Date
-  screeningTapeId?: number
-  screeningStartedAt?: Date
-}
+import { type BroadcastState } from './types'
 
-export function createBroadcastStateSource(init: { onStateChange: (newState: BroadcastState) => void, onError: (err: Error) => void }): EventSource {
-  const source = new EventSource('/api/showtime/state')
-  source.addEventListener('error', (ev) => {
-    console.error(ev)
-  })
-  source.addEventListener('message', (ev) => {
-    let newState = null as null | BroadcastState
-    try {
-      newState = parseBroadcastState(JSON.parse(ev.data))
-    } catch (err) {
-      init.onError((err instanceof Error) ? err : new Error(String(err)))
-    }
-    if (newState) {
-      init.onStateChange(newState)
-    }
-  })
-  return source
-}
-
-function parseBroadcastState(data: unknown): BroadcastState {
+export function parseBroadcastState(data: unknown): BroadcastState {
   if (typeof data !== "object") {
     throw new Error("invalid broadcast state: data is not an object")
   }

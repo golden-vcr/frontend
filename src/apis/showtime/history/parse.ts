@@ -1,53 +1,6 @@
-export async function fetchBroadcastSummary(): Promise<Summary> {
-  const url = '/api/showtime/history'
-  const r = await fetch(url)
-  if (!r.ok) {
-    let suffix = ''
-    try {
-      const message = await r.text()
-      suffix = `: ${message}`
-    } catch (ignored) {
-    }
-    throw new Error(`Got ${r.status} response from ${url}${suffix}`)
-  }
-  const data = await r.json()
-  return parseSummary(data)
-}
+import type { Summary, Broadcast, Screening } from './types'
 
-export async function fetchBroadcastHistory(broadcastId: number): Promise<Broadcast> {
-  const url = `/api/showtime/history/${broadcastId}`
-  const r = await fetch(url)
-  if (!r.ok) {
-    let suffix = ''
-    try {
-      const message = await r.text()
-      suffix = `: ${message}`
-    } catch (ignored) {
-    }
-    throw new Error(`Got ${r.status} response from ${url}${suffix}`)
-  }
-  const data = await r.json()
-  return parseBroadcast(data)
-}
-
-export type Summary = {
-  broadcastIdsByTapeId: { [key: string]: number[] }
-}
-
-export type Broadcast = {
-  id: number
-  startedAt: Date
-  endedAt: Date | null
-  screenings: Screening[]
-}
-
-export type Screening = {
-  tapeId: number
-  startedAt: Date
-  endedAt: Date | null
-}
-
-function parseSummary(data: unknown): Summary {
+export function parseSummary(data: unknown): Summary {
   if (typeof data !== "object") {
     throw new Error("invalid broadcast summary: data is not an object")
   }
@@ -62,7 +15,7 @@ function parseSummary(data: unknown): Summary {
   return { broadcastIdsByTapeId }
 }
 
-function parseBroadcast(data: unknown): Broadcast {
+export function parseBroadcast(data: unknown): Broadcast {
   if (typeof data !== "object") {
     throw new Error("invalid broadcast history: data is not an object")
   }

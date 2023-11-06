@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fetchBroadcastHistory } from '../history'
+  import { fetchBroadcastHistory } from '../apis/showtime/history'
   import { tapes } from '../tapes/index'
 
   export let broadcastId: number

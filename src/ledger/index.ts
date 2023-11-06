@@ -1,9 +1,7 @@
 import { writable } from 'svelte/store'
 import { auth } from '../auth'
 
-import { fetchLedgerBalance, type LedgerBalance } from './api'
-
-export { type LedgerBalance, type LedgerTransactionHistory, type LedgerTransaction, type LedgerTransactionState } from './api'
+import { fetchLedgerBalance, type LedgerBalance } from '../apis/ledger/records'
 
 // Use a global store to keep track of our balances for the logged-in user
 type BalanceStore = {

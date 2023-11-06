@@ -1,45 +1,8 @@
-export async function fetchCatalogListing(): Promise<CatalogListing> {
-  const url = '/api/tapes/catalog'
-  const r = await fetch(url)
-  if (!r.ok) {
-    let suffix = ''
-    try {
-      const message = await r.text()
-      suffix = `: ${message}`
-    } catch (ignored) {
-    }
-    throw new Error(`Got ${r.status} response from ${url}${suffix}`)
-  }
-  const data = await r.json()
-  return parseCatalogListing(data)
-}
-
-export type CatalogListing = {
-  imageHost: string
-  items: CatalogItem[]
-}
-
-export type CatalogItem = {
-  id: number
-  title: string
-  year: number
-  runtime: number
-  thumbnail: string
-  images: GalleryImage[]
-  tags: string[]
-}
-
-export type GalleryImage = {
-  filename: string
-  width: number
-  height: number
-  color: string
-  rotated: boolean
-}
+import type { CatalogListing, CatalogItem, GalleryImage } from './types'
 
 const HEX_COLOR_REGEX = /^#[a-zA-Z0-9]{3}(?:[a-zA-Z0-9]{3})?$/
 
-function parseCatalogListing(data: unknown): CatalogListing {
+export function parseCatalogListing(data: unknown): CatalogListing {
   if (typeof data !== "object") {
     throw new Error("invalid tape listing: data is not an object")
   }

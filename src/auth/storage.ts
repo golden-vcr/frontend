@@ -1,6 +1,6 @@
-import { config } from "../config"
+import { config } from '../config'
 
-import { type AuthState, type AuthRole } from "./types"
+import { type AuthState, type AuthRole } from '../apis/auth/authentication'
 
 const TWITCH_AUTH_STORAGE_KEY_PREFIX = 'gvcr.twitch.'
 const TWITCH_AUTH_KEY = (name: string) => `${TWITCH_AUTH_STORAGE_KEY_PREFIX}${name}`

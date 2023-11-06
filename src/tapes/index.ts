@@ -1,7 +1,7 @@
-import { writable } from "svelte/store"
+import { writable } from 'svelte/store'
 
-import { fetchCatalogListing, type CatalogListing } from "./api"
-import { fetchBroadcastSummary, type Summary } from "../history"
+import { fetchCatalogListing, type CatalogListing } from '../apis/tapes/catalog'
+import { fetchBroadcastSummary, type Summary } from '../apis/showtime/history'
 
 export type Tape = {
   id: number
