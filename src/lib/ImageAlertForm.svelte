@@ -8,6 +8,7 @@
 
   async function requestImageGenerationAlert(subject: string) {
     submissionState = 'pending'
+    submissionError = ''
     const r = await authorizedFetch('/api/showtime/image-gen', {
       method: 'POST',
       headers: {
@@ -24,9 +25,10 @@
       }
       const suffix = message ? `: ${message}` : ''
       submissionState = 'failed'
-      throw new Error(`Got status ${r.status} from POST /image-gen${suffix}`)
+      submissionError = `Got status ${r.status} from POST /image-gen${suffix}`
+    } else {
+      submissionState = 'ok'
     }
-    submissionState = 'ok'
   }
 </script>
 
@@ -38,7 +40,7 @@
   <input
     type="text"
     bind:value={subjectText}
-    disabled={$balance.numPointsAvailable < 500}
+    disabled={$balance.numPointsAvailable < 500 || submissionState === 'pending'}
   />
   <button
     disabled={$balance.numPointsAvailable < 500 || submissionState === 'pending' || subjectText.length <= 0 || subjectText.length > 120}
