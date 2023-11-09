@@ -1,35 +1,59 @@
 <script lang="ts">
   import { fetchBroadcast } from '../apis/showtime/history'
-  import { tapes } from '../state/tapes'
+
+  import ScreenedTapeDetails from '../lib/ScreenedTapeDetails.svelte'
 
   export let broadcastId: number
   const promise = fetchBroadcast(broadcastId)
+
+  function formatDuration(from: Date, to: Date): string {
+    const deltaMs = to.getTime() - from.getTime()
+    const totalSeconds = Math.round(deltaMs / 1000)
+    if (totalSeconds < 60) {
+      return `${totalSeconds} seconds`
+    }
+    const totalMinutes = Math.round(totalSeconds / 60)  
+    if (totalMinutes < 60) {
+      return `${totalMinutes} minutes`
+    }
+    const h = Math.trunc(totalMinutes)
+    const m = totalMinutes - (h * 60)
+    if (m) {
+      return `${h} hours, ${m} minutes`
+    }
+    return `${h} hours`
+  }
 </script>
 
 <div>
 {#await promise}
 <p style="text-align: center">Loading...</p>
 {:then broadcast}
-<p>Broadcast {broadcast.id}:</p>
-<ul>
-  <li><b>Started at:</b> {broadcast.startedAt.toLocaleString()}</li>
+<h1>Broadcast {broadcast.id} - {broadcast.startedAt.toLocaleDateString(window.navigator.language, {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</h1>
+
 {#if broadcast.endedAt !== null}
-  <li><b>Ended at:</b> {broadcast.endedAt.toLocaleString()}</li>
+<p>Streamed for {formatDuration(broadcast.startedAt, broadcast.endedAt)}.</p>
 {:else}
-  <li><em>Still live!</em></li>
+<p>Live since {broadcast.startedAt.toLocaleTimeString()}.</p>
 {/if}
-{#if broadcast.screenings.length > 0}
-  <li>Screened {broadcast.screenings.length} tape{broadcast.screenings.length === 1 ? '' : 's'}:</li>
-  <ul>
+
+{#if broadcast.screenings.length === 0}
+<p>No tapes screened.</p>
+{:else}
 {#each broadcast.screenings as screening}
-    <li>{screening.tapeId}: {$tapes.find((x) => x.id === screening.tapeId)?.title || '<unknown tape>'}</li>
+<ScreenedTapeDetails tapeId={screening.tapeId} />
 {/each}
-  </ul>
-{:else}
-  <li>No tapes screened.</li>
 {/if}
-</ul>
+
 {:catch error}
 <p>{error.toString()}</p>
 {/await}
 </div>
+
+<style>
+  h1 {
+    font-size: 1.75rem;
+    line-height: 1.0;
+    margin: 0;
+  }
+</style>
