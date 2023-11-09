@@ -9,7 +9,7 @@
 
 {#if tape}
 <div class="container" style={`border-color: ${tape.color}`}>
-  <TapeListItem tape={tape}>
+  <TapeListItem tape={tape} />
 </div>
 {:else}
 <p>Loading tape {tapeId}...</p>
