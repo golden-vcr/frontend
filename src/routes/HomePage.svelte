@@ -45,9 +45,7 @@
 
 {#if currentTape}
   <p>Join the fun now at <a href="https://www.twitch.tv/goldenvcr">twitch.tv/GoldenVCR</a>, where we're currently watching:</p>
-  <div class="current-tape" style={`border-color: ${currentTape.color}`}>
-    <TapeListItem tape={currentTape} />
-  </div>
+  <TapeListItem tape={currentTape} withFrame />
 {:else}
   <p>Live now at <a href="https://www.twitch.tv/goldenvcr">twitch.tv/GoldenVCR</a>!</p>
 {/if}
@@ -77,12 +75,3 @@
 {:else}
 <AboutContent />
 {/if}
-
-<style>
-  .current-tape {
-    border: 1px solid;
-    border-left: 8px solid;
-    padding: 1rem;
-    background-color: #181818;
-  }
-</style>

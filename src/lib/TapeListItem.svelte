@@ -6,9 +6,11 @@
   import Tag from './Tag.svelte'
 
   export let tape: Tape
+
+  export let withFrame = false
 </script>
 
-<div class="container">
+<div class={`container${withFrame ? ' frame' : ''}`} style={`border-color: ${tape.color}`}>
   <TapeThumbnail {tape} />
   <div class="info">
     <span class="title">
@@ -52,6 +54,12 @@
   .container {
     display: flex;
     width: 100%;
+  }
+  .frame {
+    border: 1px solid;
+    border-left: 8px solid;
+    padding: 1rem;
+    background-color: #181818;
   }
   .info {
     width: 100%;

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fetchBroadcast } from '../apis/showtime/history'
 
-  import ScreenedTapeDetails from '../lib/ScreenedTapeDetails.svelte'
+  import TapeListItemLoader from '../lib/TapeListItemLoader.svelte'
 
   export let broadcastId: number
   const promise = fetchBroadcast(broadcastId)
@@ -41,7 +41,7 @@
 <p>No tapes screened.</p>
 {:else}
 {#each broadcast.screenings as screening}
-<ScreenedTapeDetails tapeId={screening.tapeId} />
+<TapeListItemLoader tapeId={screening.tapeId} withFrame />
 {/each}
 {/if}
 
