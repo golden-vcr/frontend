@@ -5,6 +5,7 @@
 
   import HomePage from './routes/HomePage.svelte'
   import AboutPage from './routes/AboutPage.svelte'
+  import ContributionsPage from './routes/ContributionsPage.svelte'
   import TapesPage from './routes/TapesPage.svelte'
   import TapePage from './routes/TapePage.svelte'
   import ExplorePage from './routes/ExplorePage.svelte'
@@ -13,7 +14,7 @@
   import AdminPage from './routes/AdminPage.svelte'
   import ProfilePage from './routes/ProfilePage.svelte'
 
-    import { auth } from './auth'
+  import { auth } from './auth'
   import './state'
   import { errors, acknowledgeErrors } from './state/errors'
   import { initTapes } from './state/tapes'
@@ -45,6 +46,7 @@
 {/if}
     <Route path="/" component={HomePage} />
     <Route path="/about" component={AboutPage} />
+    <Route path="/contributions" component={ContributionsPage} />
     <Route path="/tapes">
       <TapesPage />
     </Route>
