@@ -16,7 +16,7 @@
     if (totalMinutes < 60) {
       return `${totalMinutes} minutes`
     }
-    const h = Math.trunc(totalMinutes)
+    const h = Math.trunc(totalMinutes / 60)
     const m = totalMinutes - (h * 60)
     if (m) {
       return `${h} hours, ${m} minutes`
