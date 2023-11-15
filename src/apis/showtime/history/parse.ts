@@ -1,4 +1,4 @@
-import type { BroadcastSummary, Broadcast, Screening } from './types'
+import type { BroadcastSummary, Broadcast, Screening, ImageRequest } from './types'
 
 export function parseBroadcastSummary(data: unknown): BroadcastSummary {
   if (typeof data !== "object") {
@@ -99,5 +99,41 @@ function parseScreening(data: unknown): Screening {
     }
   }
 
-  return { tapeId, startedAt, endedAt }
+  // Screening.imageRequests
+  const imageRequests = [] as ImageRequest[]
+  if (!Array.isArray(obj["imageRequests"])) {
+    throw new Error("invalid screening history: 'imageRequests' array is required")
+  }
+  for (let i = 0; i < obj["imageRequests"].length; i++) {
+    imageRequests.push(parseImageRequest(obj["imageRequests"][i]))
+  }
+
+  return { tapeId, startedAt, endedAt, imageRequests }
+}
+
+function parseImageRequest(data: unknown): ImageRequest {
+  if (typeof data !== "object") {
+    throw new Error("invalid image request: data is not an object")
+  }
+  const obj = data as { [key: string]: unknown }
+
+  // ImageRequest.id
+  if (typeof obj["id"] !== "string" || !obj["id"]) {
+    throw new Error("invalid image request: non-empty 'id' string field is required")
+  }
+  const id = obj["id"]
+
+  // ImageRequest.username
+  if (typeof obj["username"] !== "string" || !obj["username"]) {
+    throw new Error("invalid image request: non-empty 'username' string field is required")
+  }
+  const username = obj["username"]
+
+  // ImageRequest.subject
+  if (typeof obj["subject"] !== "string" || !obj["subject"]) {
+    throw new Error("invalid image request: non-empty 'subject' string field is required")
+  }
+  const subject = obj["subject"]
+
+  return { id, username, subject }
 }

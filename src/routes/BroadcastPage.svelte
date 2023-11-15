@@ -2,9 +2,18 @@
   import { fetchBroadcast } from '../apis/showtime/history'
 
   import TapeListItemLoader from '../lib/TapeListItemLoader.svelte'
+  import ImageRequestList from '../lib/ImageRequestList.svelte'
 
   export let broadcastId: number
   const promise = fetchBroadcast(broadcastId)
+
+  let selectedImageRequestId = ''
+  function showImageRequest(id: string) {
+    selectedImageRequestId = id
+  }
+  function closeImageRequest() {
+    selectedImageRequestId = ''
+  }
 
   function formatDuration(from: Date, to: Date): string {
     const deltaMs = to.getTime() - from.getTime()
@@ -42,6 +51,7 @@
 {:else}
 {#each broadcast.screenings as screening}
 <TapeListItemLoader tapeId={screening.tapeId} withFrame />
+<ImageRequestList requests={screening.imageRequests} />
 {/each}
 {/if}
 
