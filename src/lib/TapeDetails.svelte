@@ -44,6 +44,7 @@
     GVCR #{String(tape.id).padStart(3, '0')}:
     {tape.runtime ? `${tape.runtime} minutes` : 'Unknown runtime'},
     {tape.year ? `${tape.year}` : 'unknown year'}
+    {tape.contributor ? ` (Contributed by ${tape.contributor})` : ''}
   </div>
 {#if showAdminControls}
   <div class="admin-controls">

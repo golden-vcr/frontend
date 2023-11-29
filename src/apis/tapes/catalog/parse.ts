@@ -65,6 +65,12 @@ function parseCatalogItem(data: unknown): CatalogItem {
   }
   const thumbnail = obj["thumbnail"]
 
+  // CatalogItem.contributor
+  let contributor = undefined as string | undefined
+  if (typeof obj["contributor"] === "string" && obj["contributor"] !== "") {
+    contributor = obj["contributor"]
+  }
+
   // CatalogItem.images
   const images = [] as GalleryImage[]
   if (!Array.isArray(obj["images"])) {
@@ -87,7 +93,7 @@ function parseCatalogItem(data: unknown): CatalogItem {
     tags.push(tag)
   }
 
-  return { id, title, year, runtime, thumbnail, images, tags }
+  return { id, title, year, runtime, thumbnail, contributor, images, tags }
 }
 
 function parseGalleryImage(data: unknown): GalleryImage {

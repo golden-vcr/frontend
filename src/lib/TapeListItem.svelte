@@ -39,6 +39,11 @@
         <i>Unknown runtime</i>
 {/if}
       </li>
+{#if !!tape.contributor}
+      <li>
+        <b>Contributor:</b> {tape.contributor}
+      </li>
+{/if}
       <li>
 {#if tape.broadcastIds.length > 0}
         <b>Last screened in:</b> <Link to={`/broadcasts/${tape.broadcastIds[tape.broadcastIds.length - 1]}`}>Broadcast {tape.broadcastIds[tape.broadcastIds.length - 1]}</Link>

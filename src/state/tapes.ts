@@ -12,6 +12,7 @@ export type Tape = {
   title: string
   year?: number
   runtime?: number
+  contributor?: string
   color: string
   thumbnailImage: string
   images: TapeImage[]
@@ -93,6 +94,7 @@ function buildTapes(catalogListing: CatalogListing, broadcastSummary: BroadcastS
       title: item.title,
       year: item.year > 0 ? item.year : undefined,
       runtime: item.runtime > 0 ? item.runtime : undefined,
+      contributor: item.contributor,
       color: item.images.length > 0 ? item.images[0].color : '#cccccc',
       thumbnailImage: `${catalogListing.imageHost}/${item.thumbnail}`,
       images: item.images.map((data, i) => ({
