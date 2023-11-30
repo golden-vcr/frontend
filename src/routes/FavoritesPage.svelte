@@ -7,7 +7,7 @@
 
 <div>
 {#if favoriteTapes.length > 0}
-  <TapeBrowser tapes={favoriteTapes} condensed={false} byCategory={false} />
+  <TapeBrowser tapes={favoriteTapes} condensed={false} byCategory={false} includeTapesWithBroadcastHistory={true} />
 {:else}
   <p>You have no favorite tapes selected.</p>
 {/if}

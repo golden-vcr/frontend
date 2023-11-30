@@ -9,6 +9,15 @@
   export let condensed: boolean
   export let byCategory: boolean
 
+  export let includeTapesWithBroadcastHistory: boolean
+
+  function filterTapes(tapes: Tape[]): Tape[] {
+    if (includeTapesWithBroadcastHistory) {
+      return tapes
+    }
+    return tapes.filter((x) => x.broadcastIds.length === 0)
+  }
+
   function collectTags(acc: { [key: string]: true }, tape: Tape): { [key: string]: true } {
     let cur = {} as { [key: string]: true }
     for (const tag of tape.tags) {
@@ -31,7 +40,7 @@
     }
     return sections
   }
-  $: sections = collectSections(tapes, tags, byCategory)
+  $: sections = collectSections(filterTapes(tapes), tags, byCategory)
 </script>
 
 <div class="container">
