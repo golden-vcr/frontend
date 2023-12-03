@@ -60,7 +60,13 @@ export function parseBroadcast(data: unknown): Broadcast {
     screenings.push(parseScreening(obj["screenings"][i]))
   }
 
-  return { id, startedAt, endedAt, screenings }
+  // Broadcast.vodUrl
+  let vodUrl = undefined as string | undefined
+  if (typeof obj["vodUrl"] === "string" && obj["vodUrl"] !== "") {
+    vodUrl = obj["vodUrl"]
+  }
+
+  return { id, startedAt, endedAt, screenings, vodUrl }
 }
 
 function parseScreening(data: unknown): Screening {

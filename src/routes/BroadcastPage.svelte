@@ -40,11 +40,17 @@
 {:then broadcast}
 <h1>Broadcast {broadcast.id} - {broadcast.startedAt.toLocaleDateString(window.navigator.language, {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</h1>
 
+<div class="summary-info">
 {#if broadcast.endedAt !== null}
-<p>Streamed for {formatDuration(broadcast.startedAt, broadcast.endedAt)}.</p>
+  <p>Streamed for {formatDuration(broadcast.startedAt, broadcast.endedAt)}.</p>
 {:else}
-<p>Live since {broadcast.startedAt.toLocaleTimeString()}.</p>
+  <p>Live since {broadcast.startedAt.toLocaleTimeString()}.</p>
 {/if}
+
+{#if broadcast.vodUrl}
+  <p class="vod-link">VOD: <a href={broadcast.vodUrl} target="_blank">{broadcast.vodUrl}</a></p>
+{/if}
+</div>
 
 {#if broadcast.screenings.length === 0}
 <p>No tapes screened.</p>
@@ -65,5 +71,12 @@
     font-size: 1.75rem;
     line-height: 1.0;
     margin: 0;
+  }
+  .summary-info {
+    margin: 1em;
+  }
+  .summary-info p {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 </style>

@@ -7,6 +7,7 @@ export type Broadcast = {
   startedAt: Date
   endedAt: Date | null
   screenings: Screening[]
+  vodUrl?: string
 }
 
 export type Screening = {
