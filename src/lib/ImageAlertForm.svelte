@@ -34,16 +34,16 @@
 
 <fieldset>
   <p>
-    For only 500 points, you can send a ghostly apparition to haunt my VCR! Simply
+    For only 200 points, you can send a ghostly apparition to haunt my VCR! Simply
     describe what you'd like to see and click <b>Submit</b>:
   </p>
   <input
     type="text"
     bind:value={subjectText}
-    disabled={$balance.numPointsAvailable < 500 || submissionState === 'pending'}
+    disabled={$balance.numPointsAvailable < 200 || submissionState === 'pending'}
   />
   <button
-    disabled={$balance.numPointsAvailable < 500 || submissionState === 'pending' || subjectText.length <= 0 || subjectText.length > 120}
+    disabled={$balance.numPointsAvailable < 200 || submissionState === 'pending' || subjectText.length <= 0 || subjectText.length > 120}
     on:click={() => requestImageGenerationAlert(subjectText)}
   >
     Submit
