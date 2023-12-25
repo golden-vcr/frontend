@@ -2,7 +2,7 @@
   import { Link } from 'svelte-routing'
   import { type Tape } from '../state/tapes'
 
-  import TapeThumbnail from './TapeThumbnail.svelte'
+  import TapeThumbnail from './tapes/TapeThumbnail.svelte'
   import Tag from './Tag.svelte'
 
   export let tape: Tape
@@ -11,7 +11,7 @@
 </script>
 
 <div class={`container${withFrame ? ' frame' : ''}`} style={`border-color: ${tape.color}`}>
-  <TapeThumbnail {tape} />
+  <TapeThumbnail {tape} dogEarIfScreened={!withFrame} />
   <div class="info">
     <span class="title">
       <Link to={`/tapes/${tape.id}`}>{tape.title}</Link>
@@ -58,7 +58,6 @@
 <style>
   .container {
     display: flex;
-    width: 100%;
   }
   .frame {
     border: 1px solid;

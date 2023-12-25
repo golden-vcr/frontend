@@ -1,7 +1,10 @@
 <script lang="ts">
   import { navigate } from 'svelte-routing'
-  import { type Tape } from '../state/tapes'
+  import { type Tape } from '../../state/tapes'
+
   export let tape: Tape
+  export let dogEarIfScreened = false
+
   let focused = false
   let hovered = false
 </script>
@@ -23,7 +26,7 @@
   }}
 >
   <img src={tape.thumbnailImage} alt={`Preview image for tape ${tape.id}`} loading="lazy" />
-{#if tape.broadcastIds.length > 0}
+{#if dogEarIfScreened && tape.broadcastIds.length > 0}
   <div class="screened-overlay" style={`background-color: ${tape.color}`}>
     <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
       <polygon points="0,0 64,0 64,64" fill="#242424" stroke="none" />
