@@ -10,6 +10,7 @@ export type CatalogItem = {
   runtime: number
   thumbnail: string
   contributor?: string
+  numFavorites: number
   images: GalleryImage[]
   tags: string[]
 }

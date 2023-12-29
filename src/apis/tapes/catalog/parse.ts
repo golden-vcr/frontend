@@ -71,6 +71,12 @@ function parseCatalogItem(data: unknown): CatalogItem {
     contributor = obj["contributor"]
   }
 
+  // CatalogItem.numFavorites
+  if (typeof obj["numFavorites"] !== "number") {
+    throw new Error("invalid tape: numeric 'numFavorites' field is required")
+  }
+  const numFavorites = obj["numFavorites"]
+
   // CatalogItem.images
   const images = [] as GalleryImage[]
   if (!Array.isArray(obj["images"])) {
@@ -93,7 +99,7 @@ function parseCatalogItem(data: unknown): CatalogItem {
     tags.push(tag)
   }
 
-  return { id, title, year, runtime, thumbnail, contributor, images, tags }
+  return { id, title, year, runtime, thumbnail, contributor, numFavorites, images, tags }
 }
 
 function parseGalleryImage(data: unknown): GalleryImage {

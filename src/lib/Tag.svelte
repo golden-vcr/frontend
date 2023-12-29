@@ -2,10 +2,11 @@
   import { formatTagName, getTagColor } from "../tags";
 
   export let tag: string
+  export let small = false
   $: color = getTagColor(tag)
 </script>
 
-<div style={`background-color: ${color}`}>
+<div class={small ? 'small' : undefined} style={`background-color: ${color}`}>
   {formatTagName(tag)}
 </div>
 
@@ -18,6 +19,9 @@
     text-shadow: rgba(0, 0, 0, 0.5) 1px 1px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.25));
     white-space: nowrap;
+  }
+  .small {
+    font-size: 0.875rem;
   }
   @media only screen and (max-width: 696px) {
     div {

@@ -114,8 +114,12 @@
   }
   @media only screen and (max-width: 696px) {
     .container {
-      flex-basis: 143px;
-      height: 260px;
+      flex-basis: 110px;
+      height: 200px;
+    }
+    .screened-overlay {
+      width: 32px;
+      height: 32px;
     }
   }
 </style>

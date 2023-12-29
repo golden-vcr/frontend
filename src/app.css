@@ -60,6 +60,11 @@ main :first-child {
 }
 
 
+input, select {
+  border: 1px solid #404040;
+  border-radius: 4px;
+  background-color: #323232;
+}
 
 
 a {
