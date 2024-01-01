@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
+
   import TapeTable from './TapeTable.svelte'
   import TapeTableFilterControls from './TapeTableFilterControls.svelte'
   import TapeList from './TapeList.svelte'
@@ -15,6 +17,29 @@
   export let onClearFilters: () => void
 
   $: tapeIds = getFilteredTapeIds($tapes, filterParams)
+
+  // Allow a random tape to be highlighted by hitting a secret hotkey
+  $: randomTapeId = tapeIds.length - tapeIds.length
+  function chooseRandomTape() {
+    randomTapeId = tapeIds.length > 0 ? tapeIds[Math.floor(Math.random() * tapeIds.length)] : 0
+    const elem = document.getElementById(`tape-${randomTapeId}`)
+    if (elem) {
+      elem.scrollIntoView()
+      window.scrollBy(0, -120)
+    }
+  }
+
+  onMount(() => {
+    const onWindowKeyPress = (ev: KeyboardEvent) => {
+      if (ev.key === '\\') {
+        chooseRandomTape()
+      }
+    }
+    window.addEventListener('keypress', onWindowKeyPress)
+    return () => {
+      window.removeEventListener('keypress', onWindowKeyPress)
+    }
+  })
 </script>
 
 <div class="container">
@@ -30,6 +55,7 @@
       {onSortChange}
       {onClearFilters}
       {tapeIds}
+      highlightedTapeId={randomTapeId}
     />
   </div>
   <div class="narrow">

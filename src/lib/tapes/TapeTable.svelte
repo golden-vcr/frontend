@@ -8,6 +8,7 @@
   export let onSortChange: (criteria: TapeSortCriteria, descending: boolean) => void
   export let onClearFilters: () => void
   export let tapeIds: number[]
+  export let highlightedTapeId: number
 
   function onClickHeading(criteria: TapeSortCriteria) {
     if (filterParams.sortBy === criteria) {
@@ -72,7 +73,7 @@
     />
   </tr>
 {#each tapeIds as tapeId}
-  <TapeTableRow {tapeId} />
+  <TapeTableRow {tapeId} isHighlighted={highlightedTapeId === tapeId} />
 {/each}
 </table>
 {:else}

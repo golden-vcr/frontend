@@ -5,11 +5,12 @@
   import Tag from '../Tag.svelte'
 
   export let tapeId: number
+  export let isHighlighted: boolean
 
   $: tape = $tapes.find((x) => x.id === tapeId) || null
 </script>
 
-<tr>
+<tr id={`tape-${tapeId}`} class={isHighlighted ? 'highlighted' : ''}>
   <th class="id">{tapeId}</th>
   <th class="favorites">
     <button
@@ -110,7 +111,13 @@
     border-top: 1px solid #404040;
   }
   tr:hover {
-    background-color: #282828;
+    background-color: #5a5a5a33;
+  }
+  .highlighted {
+    background-color: #ebe70041;
+  }
+  tr.highlighted:hover {
+    background-color: #ebe70050;
   }
   th, td {
     padding: 0;
