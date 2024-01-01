@@ -56,18 +56,80 @@ function filterTapesByFavoriteStatus(tapes: Tape[], status: TapeFavoriteStatus):
 }
 
 function filterTapesBySearchText(tapes: Tape[], searchText: string): Tape[] {
-  if (!searchText) {
+  const substrings = parseSearchSubstrings(searchText)
+  console.log(substrings)
+  if (substrings.include.length === 0 && substrings.exclude.length === 0) {
     return tapes
   }
-  const searchTextLower = searchText.toLowerCase()
-  return tapes.filter((x) => {
-    if (x.title.toLowerCase().includes(searchTextLower)) return true
-    if (x.contributor && x.contributor.toLowerCase().includes(searchTextLower)) return true
-    for (const tag of x.tags) {
-      if (tag.includes(searchTextLower)) return true
+  return tapes.filter((tape) => tapeMatchesSearchSubstrings(tape, substrings.include, substrings.exclude))
+}
+
+function parseSearchSubstrings(searchText: string): {include: string[], exclude: string[]} {
+  let includeSubstrings = [] as string[]
+  let excludeSubstrings = [] as string[]
+
+  let currentSubstring = ''
+  let currentIsExclude = false
+  const pushCurrent = (newIsExclude?: boolean) => {
+    if (currentSubstring !== '') {
+      if (currentIsExclude) {
+        excludeSubstrings.push(currentSubstring)
+      } else {
+        includeSubstrings.push(currentSubstring)
+      }
     }
-    return false
-  })
+    currentSubstring = ''
+    currentIsExclude = newIsExclude || false
+  }
+
+  const tokens = searchText.toLowerCase().split(/\s+/).filter((x) => x.length > 0)
+  for (const token of tokens) {
+    if (token.startsWith('-')) {
+      pushCurrent(true)
+      currentSubstring += token.slice(1)
+    } else if (token.startsWith('+')) {
+      pushCurrent(false)
+      currentSubstring += token.slice(1)
+    } else {
+      if (currentSubstring.length > 0) {
+        currentSubstring += ` ${token}`
+      } else {
+        currentSubstring += token
+      }
+    }
+  }
+  pushCurrent()
+
+  return { include: includeSubstrings, exclude: excludeSubstrings }
+}
+
+function tapeMatchesSearchSubstrings(tape: Tape, includeSubstrings: string[], excludeSubstrings: string[]): boolean {
+  for (const substring of includeSubstrings) {
+    if (!tapeMatchesSubstring(tape, substring)) {
+      return false
+    }
+  }
+  for (const substring of excludeSubstrings) {
+    if (tapeMatchesSubstring(tape, substring)) {
+      return false
+    }
+  }
+  return true
+}
+
+function tapeMatchesSubstring(tape: Tape, substringLower: string): boolean {
+  if (tape.title.toLowerCase().includes(substringLower)) {
+    return true
+  }
+  if (tape.contributor && tape.contributor.toLowerCase().includes(substringLower)) {
+    return true
+  }
+  for (const tag of tape.tags) {
+    if (tag.includes(substringLower)) {
+      return true
+    }
+  }
+  return false
 }
 
 function sortTapes(tapes: Tape[], criteria: TapeSortCriteria): Tape[] {
