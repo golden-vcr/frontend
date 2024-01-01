@@ -25,7 +25,11 @@
     const elem = document.getElementById(`tape-${randomTapeId}`)
     if (elem) {
       elem.scrollIntoView()
-      window.scrollBy(0, -120)
+      const scrollBottom = window.scrollY + window.innerHeight
+      const isScrolledToBottom = scrollBottom >= document.body.scrollHeight
+      if (!isScrolledToBottom) {
+        window.scrollBy(0, -120)
+      }
     }
   }
 
