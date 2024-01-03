@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { Link } from 'svelte-routing'
+</script>
+
 <h1>Contributions</h1>
 <p>
   If you'd like to contribute VHS tapes to the Golden VCR archive, you're welcome to
@@ -9,9 +13,14 @@
   Cary, NC 27512
 </div>
 <p>
+  When entering or writing the shipping address, please be sure to render it exactly as
+  shown above: USPS insists that the Box number be written as <b>#1973</b>, and not as
+  <b>Box 1973</b>, <b>Unit 1973</b>, etc.
+</p>
+<p class="immediate">
   Please keep the following guidelines in mind when sending tapes:
 </p>
-<ul>
+<ul class="immediate">
   <li>
     &#x1fa99; Tapes are accepted as donations: you will not be compensated monetarily,
     although you may be credited with Golden VCR Fun Points as a gesture of thanks.
@@ -30,7 +39,7 @@
   <li>&#x274c; We ask that you please refrain from sending:</li>
   <ul>
     <li>Home video releases of popular movies or television shows</li>
-    <li>Tapes that are already in the Golden VCR Library</li>
+    <li>Tapes that are already in the Golden VCR Library (you can search on the <Link to="/tapes">Tapes</Link> page to see what's already in the collection)</li>
   </ul>
 </ul>
 
@@ -45,7 +54,7 @@
     padding-left: 1rem;
     border-left: 3px solid #ccc;
   }
-  ul {
+  .immediate {
     margin-top: 0;
   }
 </style>
