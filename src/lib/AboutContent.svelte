@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Link } from 'svelte-routing'
 
-  const numBroadcastsToShow = 14
+  const numBroadcastsToShow = 15
   const broadcastIds = [...Array(numBroadcastsToShow).keys()].map((x) => x + 1)
 </script>
 
