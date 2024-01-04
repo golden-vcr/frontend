@@ -6,6 +6,8 @@ export type TapeFilterParams = {
   searchText: string
   sortBy: TapeSortCriteria
   sortDescending: boolean
+  minTapeId?: number
+  maxTapeId?: number
 }
 
 export type TapeScreeningStatus = 'all' | 'unscreened' | 'screened'
@@ -25,6 +27,14 @@ export function getFilteredTapeIds(tapes: Tape[], params: TapeFilterParams): num
   filtered = filterTapesByFavoriteStatus(filtered, params.showFavoriteStatus)
   if (params.searchText) {
     filtered = filterTapesBySearchText(filtered, params.searchText)
+  }
+  if (params.minTapeId && params.minTapeId > 0) {
+    const minId = params.minTapeId
+    filtered = filtered.filter((x) => x.id >= minId)
+  }
+  if (params.maxTapeId && params.maxTapeId > 0) {
+    const maxId = params.maxTapeId
+    filtered = filtered.filter((x) => x.id <= maxId)
   }
   const sorted = sortTapes(filtered, params.sortBy)
   if (params.sortDescending) {

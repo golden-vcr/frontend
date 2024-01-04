@@ -2,6 +2,7 @@
   import TapesContent from '../lib/tapes/TapesContent.svelte'
   import type { TapeFilterParams, TapeScreeningStatus, TapeFavoriteStatus, TapeSortCriteria } from '../state/tapes'
   import { TAPE_FAVORITE_STATUS_VALUES, TAPE_SCREENING_STATUS_VALUES, TAPE_SORT_CRITERIA_VALUES } from '../state/tapes'
+    import ProfilePage from './ProfilePage.svelte';
 
   function parseFilterParamsFromURL(search: string): TapeFilterParams {
     let result = {
@@ -32,6 +33,20 @@
     if (descStr && !['0', 'false', 'f', 'no'].includes(descStr)) {
       result.sortDescending = true
     }
+    const minStr = p.get('min')
+    if (minStr) {
+      const minId = parseInt(minStr)
+      if (!isNaN(minId) && minId > 0) {
+        result.minTapeId = minId
+      }
+    }
+    const maxStr = p.get('max')
+    if (maxStr) {
+      const maxId = parseInt(maxStr)
+      if (!isNaN(maxId) && maxId > 0) {
+        result.maxTapeId = maxId
+      }
+    }
     return result
   }
 
@@ -51,6 +66,12 @@
     }
     if (params.sortDescending) {
       p.set('desc', '1')
+    }
+    if (params.minTapeId && params.minTapeId > 0) {
+      p.set('min', `${params.minTapeId}`)
+    }
+    if (params.maxTapeId && params.maxTapeId > 0) {
+      p.set('max', `${params.maxTapeId}`)
     }
     return p.toString()
   }
@@ -108,6 +129,8 @@
     filterParams.searchText = ''
     filterParams.sortBy = 'id'
     filterParams.sortDescending = false
+    filterParams.minTapeId = undefined
+    filterParams.maxTapeId = undefined
     updateLocation()
   }
 </script>
