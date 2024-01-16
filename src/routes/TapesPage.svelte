@@ -2,7 +2,6 @@
   import TapesContent from '../lib/tapes/TapesContent.svelte'
   import type { TapeFilterParams, TapeScreeningStatus, TapeFavoriteStatus, TapeSortCriteria } from '../state/tapes'
   import { TAPE_FAVORITE_STATUS_VALUES, TAPE_SCREENING_STATUS_VALUES, TAPE_SORT_CRITERIA_VALUES } from '../state/tapes'
-    import ProfilePage from './ProfilePage.svelte';
 
   function parseFilterParamsFromURL(search: string): TapeFilterParams {
     let result = {

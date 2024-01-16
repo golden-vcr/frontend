@@ -1,10 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
-  import TapeTable from './TapeTable.svelte'
-  import TapeTableFilterControls from './TapeTableFilterControls.svelte'
-  import TapeList from './TapeList.svelte'
-  import TapeListFilterControls from './TapeListFilterControls.svelte'
+  import TapeListResponsive from './TapeListResponsive.svelte'
 
   import type { TapeFilterParams, TapeScreeningStatus, TapeFavoriteStatus, TapeSortCriteria } from '../../state/tapes'
   import { tapes, getFilteredTapeIds } from '../../state/tapes'
@@ -46,47 +43,14 @@
   })
 </script>
 
-<div class="container">
-  <div class="wide">
-    <TapeTableFilterControls
-      {filterParams}
-      {onScreeningStatusChange}
-      {onFavoriteStatusChange}
-      {onSearchChange}
-    />
-    <TapeTable
-      {filterParams}
-      {onSortChange}
-      {onClearFilters}
-      {tapeIds}
-      highlightedTapeId={randomTapeId}
-    />
-  </div>
-  <div class="narrow">
-    <TapeListFilterControls
-      {filterParams}
-      {onScreeningStatusChange}
-      {onFavoriteStatusChange}
-      {onSortChange}
-      {onSearchChange}
-    />
-    <TapeList
-      {tapeIds}
-      {onClearFilters}
-    />
-  </div>
-</div>
-
-<style>
-  .narrow {
-    display: none;
-  }
-  @media only screen and (max-width: 696px) {
-    .wide {
-      display: none;
-    }
-    .narrow {
-      display: inline;
-    }
-  }
-</style>
+<TapeListResponsive
+  {tapeIds}
+  highlightedTapeId={randomTapeId}
+  withFilters
+  {filterParams}
+  {onScreeningStatusChange}
+  {onFavoriteStatusChange}
+  {onSortChange}
+  {onSearchChange}
+  {onClearFilters}
+/>

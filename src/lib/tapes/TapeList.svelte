@@ -1,6 +1,7 @@
 <script lang="ts">
   import TapeListItem from './TapeListItem.svelte'
 
+  export let withFilters = true
   export let tapeIds: number[]
   export let onClearFilters: () => void
 </script>
@@ -13,7 +14,7 @@
 {:else}
   <div class="no-results">
     No tapes found.
-    <button on:click={onClearFilters}>
+    <button on:click={withFilters ? onClearFilters : () => {}}>
       Clear Filters
     </button>
   </div>

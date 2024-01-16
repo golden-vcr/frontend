@@ -4,6 +4,7 @@
   import TapeTableHeading from './TapeTableHeading.svelte'
   import TapeTableRow from './TapeTableRow.svelte'
 
+  export let withFilters = true
   export let filterParams: TapeFilterParams
   export let onSortChange: (criteria: TapeSortCriteria, descending: boolean) => void
   export let onClearFilters: () => void
@@ -21,6 +22,7 @@
 
 {#if tapeIds.length > 0}
 <table>
+{#if withFilters}
   <tr>
     <TapeTableHeading
       text="ID"
@@ -72,6 +74,18 @@
       isSortedDescending={filterParams.sortDescending}
     />
   </tr>
+{:else}
+  <tr>
+    <th>ID</th>
+    <th>Fav.</th>
+    <th>Image</th>
+    <th class="expand">Title</th>
+    <th>Year</th>
+    <th>R/t</th>
+    <th>Broadcasts</th>
+    <th>Contributor</th>
+  </tr>
+{/if}
 {#each tapeIds as tapeId}
   <TapeTableRow {tapeId} isHighlighted={highlightedTapeId === tapeId} />
 {/each}
@@ -88,6 +102,9 @@
 <style>
   table {
     border-collapse: collapse;
+  }
+  .expand {
+    width: 100%;
   }
   .no-results {
     display: flex;
