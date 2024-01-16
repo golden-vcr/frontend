@@ -14,11 +14,4 @@ export type Screening = {
   tapeId: number
   startedAt: Date
   endedAt: Date | null
-  imageRequests: ImageRequest[]
-}
-
-export type ImageRequest = {
-  id: string
-  username: string
-  subject: string
 }
