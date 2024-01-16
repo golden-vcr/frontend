@@ -1,19 +1,10 @@
 <script lang="ts">
   import { fetchBroadcast } from '../apis/showtime/history'
 
-  import TapeListItemLoader from '../lib/TapeListItemLoader.svelte'
-  import ImageRequestList from '../lib/ImageRequestList.svelte'
+  import TapeListResponsive from '../lib/tapes/TapeListResponsive.svelte'
 
   export let broadcastId: number
   const promise = fetchBroadcast(broadcastId)
-
-  let selectedImageRequestId = ''
-  function showImageRequest(id: string) {
-    selectedImageRequestId = id
-  }
-  function closeImageRequest() {
-    selectedImageRequestId = ''
-  }
 
   function formatDuration(from: Date, to: Date): string {
     const deltaMs = to.getTime() - from.getTime()
@@ -55,10 +46,22 @@
 {#if broadcast.screenings.length === 0}
 <p>No tapes screened.</p>
 {:else}
-{#each broadcast.screenings as screening}
-<TapeListItemLoader tapeId={screening.tapeId} withFrame />
-<ImageRequestList requests={screening.imageRequests} />
-{/each}
+<TapeListResponsive
+  tapeIds={broadcast.screenings.map((x) => x.tapeId)}
+  withFilters={false}
+  filterParams={{
+    showScreeningStatus: 'screened',
+    showFavoriteStatus: 'all',
+    searchText: '',
+    sortBy: 'id',
+    sortDescending: false,
+  }}
+  onScreeningStatusChange={() => {}}
+  onFavoriteStatusChange={() => {}}
+  onSortChange={() => {}}
+  onSearchChange={() => {}}
+  onClearFilters={() => {}}
+/>
 {/if}
 
 {:catch error}
