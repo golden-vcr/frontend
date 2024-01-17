@@ -12,8 +12,8 @@ import { type Tape } from './types'
 export * from './types'
 export * from './filter'
 
-const catalogListing = writable(null as CatalogListing | null)
-const broadcastSummary = writable(null as BroadcastSummary | null)
+export const catalogListing = writable(null as CatalogListing | null)
+export const broadcastSummary = writable(null as BroadcastSummary | null)
 const favoriteTapeIds = writable([] as number[])
 
 export function initTapes() {

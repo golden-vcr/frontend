@@ -1,5 +1,13 @@
 export type BroadcastSummary = {
+  broadcasts: SummarizedBroadcast[]
   broadcastIdsByTapeId: { [key: string]: number[] }
+}
+
+export type SummarizedBroadcast = {
+  id: number
+  startedAt: Date
+  vodUrl: string
+  tapeIds: number[]
 }
 
 export type Broadcast = {

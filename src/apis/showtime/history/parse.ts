@@ -1,4 +1,4 @@
-import type { BroadcastSummary, Broadcast, Screening } from './types'
+import type { BroadcastSummary, SummarizedBroadcast, Broadcast, Screening } from './types'
 
 export function parseBroadcastSummary(data: unknown): BroadcastSummary {
   if (typeof data !== "object") {
@@ -6,13 +6,65 @@ export function parseBroadcastSummary(data: unknown): BroadcastSummary {
   }
   const obj = data as { [key: string]: unknown }
 
+  // Summary.broadcasts
+  const broadcasts = [] as SummarizedBroadcast[]
+  if (!Array.isArray(obj["broadcasts"])) {
+    throw new Error("invalid broadcast summary: 'broadcasts' array is required")
+  }
+  for (let i = 0; i < obj["broadcasts"].length; i++) {
+    broadcasts.push(parseSummarizedBroadcast(obj["broadcasts"][i]))
+  }
+
   // Summary.broadcastIdsByTapeId
   if (typeof obj["broadcastIdsByTapeId"] !== "object") {
     throw new Error("invalid broadcast summary: 'broadcastIdsByTapeId' object field is required")
   }
   const broadcastIdsByTapeId = obj["broadcastIdsByTapeId"] as { [key: string]: number[] }
   
-  return { broadcastIdsByTapeId }
+  return { broadcasts, broadcastIdsByTapeId }
+}
+
+export function parseSummarizedBroadcast(data: unknown): SummarizedBroadcast {
+  if (typeof data !== "object") {
+    throw new Error("invalid summarized broadcast: data is not an object")
+  }
+  const obj = data as { [key: string]: unknown }
+
+  // SummarizedBroadcast.id
+  if (typeof obj["id"] !== "number" || obj["id"] <= 0) {
+    throw new Error("invalid summarized broadcast: positive 'id' integer field is required")
+  }
+  const id = obj["id"]
+
+  // SummarizedBroadcast.startedAt
+  if (typeof obj["startedAt"] !== "string" || !obj["startedAt"]) {
+    throw new Error("invalid summarized broadcast: non-empty 'startedAt' string field is required")
+  }
+  const startedAt = new Date(obj["startedAt"])
+  if (isNaN(startedAt.getTime())) {
+    throw new Error("invalid summarized broadcast: 'startedAt' must be a valid timestamp")
+  }
+
+  // SummarizedBroadcast.vodUrl
+  let vodUrl = ""
+  if (obj["vodUrl"] && typeof obj["vodUrl"] === "string") {
+    vodUrl = obj["vodUrl"]
+  }
+
+  // SummarizedBroadcast.tapeIds
+  let tapeIds = [] as number[]
+  if (!Array.isArray(obj["tapeIds"])) {
+    throw new Error("invalid summarized broadcast: 'tapeIds' array is required")
+  }
+  for (let i = 0; i < obj["tapeIds"].length; i++) {
+    const tapeId = parseInt(obj["tapeIds"][i])
+    if (isNaN(tapeId)) {
+      throw new Error("invalid summarized broadcast: 'tapeIds' array must contain integers")
+    }
+    tapeIds.push(tapeId)
+  }
+
+  return { id, startedAt, vodUrl, tapeIds }
 }
 
 export function parseBroadcast(data: unknown): Broadcast {
