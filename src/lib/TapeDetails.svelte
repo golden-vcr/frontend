@@ -12,7 +12,7 @@
   let tapeActivationMessage = ''
   function activateTape(tapeId: number) {
     isActivating = true
-    authorizedFetch(`/api/showtime/admin/tape/${tapeId}`, { method: 'POST' })
+    authorizedFetch(`/api/broadcasts/admin/tape/${tapeId}`, { method: 'POST' })
       .then((r) => {
         isActivating = false
         tapeActivationMessage = ''

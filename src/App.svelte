@@ -4,7 +4,6 @@
   import NavHeader from './lib/NavHeader.svelte'
 
   import HomePage from './routes/HomePage.svelte'
-  import AboutPage from './routes/AboutPage.svelte'
   import ContributionsPage from './routes/ContributionsPage.svelte'
   import TapesPage from './routes/TapesPage.svelte'
   import TapePage from './routes/TapePage.svelte'
@@ -46,7 +45,6 @@
     <button on:click={acknowledgeErrors}>Clear errors</button>
 {/if}
     <Route path="/" component={HomePage} />
-    <Route path="/about" component={AboutPage} />
     <Route path="/contributions" component={ContributionsPage} />
     <Route path="/tapes">
       <TapesPage />

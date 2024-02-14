@@ -24,7 +24,7 @@
   function clearTape() {
     const requestId = nextRequestId++
     lines.update((prev) => prev.concat([`[${requestId}] Clearing the current tape...`]))
-    authorizedFetch('/api/showtime/admin/tape', { method: 'DELETE' })
+    authorizedFetch('/api/broadcasts/admin/tape', { method: 'DELETE' })
       .then((r) => {
         handleResponse(requestId, r)
       })
@@ -37,7 +37,7 @@
     const tapeId = String(Math.round(Math.random() * 80))
     const requestId = nextRequestId++
     lines.update((prev) => prev.concat([`[${requestId}] Setting the current tape to ${tapeId}...`]))
-    authorizedFetch(`/api/showtime/admin/tape/${tapeId}`, { method: 'POST' })
+    authorizedFetch(`/api/broadcasts/admin/tape/${tapeId}`, { method: 'POST' })
       .then((r) => {
         handleResponse(requestId, r)
       })

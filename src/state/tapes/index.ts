@@ -1,11 +1,11 @@
 import { writable, derived } from 'svelte/store'
 
 import { fetchCatalogListing, type CatalogListing } from '../../apis/tapes/catalog'
-import { fetchBroadcastSummary, type BroadcastSummary } from '../../apis/showtime/history'
 import { fetchFavoriteTapeIds, setTapeIsFavorite } from '../../apis/tapes/favorites'
 
 import { isViewer } from '../access'
 import { signalError } from '../errors'
+import { broadcasts, broadcastIdsByTapeId } from '../broadcasts'
 
 import { type Tape } from './types'
 
@@ -13,17 +13,12 @@ export * from './types'
 export * from './filter'
 
 export const catalogListing = writable(null as CatalogListing | null)
-export const broadcastSummary = writable(null as BroadcastSummary | null)
 const favoriteTapeIds = writable([] as number[])
 
 export function initTapes() {
   fetchCatalogListing().then(catalogListing.set).catch((err) => {
     const message = (err instanceof Error) ? err.message : String(err)
     signalError(`Failed to fetch tape listing: ${message}`)
-  })
-  fetchBroadcastSummary().then(broadcastSummary.set).catch((err) => {
-    const message = (err instanceof Error) ? err.message : String(err)
-    signalError(`Failed to fetch broadcast summary: ${message}`)
   })
 }
 
@@ -38,17 +33,17 @@ isViewer.subscribe((isNowViewer) => {
   }
 })
 
-export const tapes = derived([catalogListing, broadcastSummary, favoriteTapeIds, isViewer],
-  ([$catalogListing, $broadcastSummary, $favoriteTapeIds, $isViewer]) => {
+export const tapes = derived([catalogListing, broadcastIdsByTapeId, favoriteTapeIds, isViewer],
+  ([$catalogListing, $broadcastIdsByTapeId, $favoriteTapeIds, $isViewer]) => {
     if ($catalogListing) {
-      return buildTapes($catalogListing, $broadcastSummary, $favoriteTapeIds, $isViewer)
+      return buildTapes($catalogListing, $broadcastIdsByTapeId, $favoriteTapeIds, $isViewer)
     }
     return [] as Tape[]
   },
   [],
 )
 
-function buildTapes(catalogListing: CatalogListing, broadcastSummary: BroadcastSummary | null, favoriteTapeIds: number[], isViewer: boolean): Tape[] {
+function buildTapes(catalogListing: CatalogListing, broadcastIdsByTapeId: { [key: string]: number[] }, favoriteTapeIds: number[], isViewer: boolean): Tape[] {
   const tapes = [] as Tape[]
   for (const item of catalogListing.items) {
     tapes.push({
@@ -68,7 +63,7 @@ function buildTapes(catalogListing: CatalogListing, broadcastSummary: BroadcastS
         displayRotatedCW: data.rotated,
       })),
       tags: item.tags,
-      broadcastIds: broadcastSummary?.broadcastIdsByTapeId[String(item.id)] || [],
+      broadcastIds: broadcastIdsByTapeId[String(item.id)] || [],
       isFavorite: favoriteTapeIds.includes(item.id),
       onToggleFavorite: !isViewer ? null : () => {
         const isNowFavorite = !favoriteTapeIds.includes(item.id)

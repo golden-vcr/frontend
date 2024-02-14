@@ -1,77 +1,87 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { derived, type Readable } from 'svelte/store'
   import { Link } from 'svelte-routing'
 
-  import { createBroadcastStateSource, type BroadcastState } from '../apis/showtime/state'
+  import { tapes, type Tape } from '../state/tapes'
+  import { broadcasts, canLoadMoreBroadcasts, loadMoreBroadcasts } from '../state/broadcasts'
+  import { type Broadcast } from '../apis/broadcasts/history'
 
-  import { auth } from '../auth'
-  import { tapes } from '../state/tapes'
-  import { balance } from '../state/balance'
+  type BroadcastWithTapes = Broadcast & { tapes: Tape[] }
 
-  import AboutContent from '../lib/AboutContent.svelte'
-  import TapeListItem from '../lib/TapeListItem.svelte'
-  import ImageAlertForm from '../lib/ImageAlertForm.svelte'
-
-  let state = { isLive: false } as BroadcastState
-  let source = null as EventSource | null
-  let errorMessage = ''
-  
-  $: currentTape = (state.isLive && !!state.screeningTapeId) ? ($tapes.find((x) => state.isLive && x.id === state.screeningTapeId) || null) : null
-
-  onMount(() => {
-    source = createBroadcastStateSource({
-      onStateChange(newState) {
-          state = newState
-          if (!newState.isLive && source) {
-            source.close()
-            source = null
-          }
-      },
-      onError(err) {
-        errorMessage = err.message
-      },
-    })
-
-    return () => {
-      if (source) {
-        source.close()
+  const broadcastsWithTapes: Readable<BroadcastWithTapes[]> = derived([tapes, broadcasts], ([$tapes, $broadcasts]) => {
+    return $broadcasts.map((broadcast) => {
+      const tapes = [] as Tape[]
+      for (const screening of broadcast.screenings) {
+        const tape = $tapes.find((x) => x.id === screening.tapeId)
+        if (tape) {
+          tapes.push(tape)
+        }
       }
-    }
+      return { ...broadcast, tapes }
+    })
   })
 </script>
 
-{#if state.isLive}
-<div>
-
-{#if currentTape}
-  <p>Join the fun now at <a href="https://www.twitch.tv/goldenvcr">twitch.tv/GoldenVCR</a>, where we're currently watching:</p>
-  <TapeListItem tape={currentTape} withFrame />
+<p>Follow at: <a href="https://www.twitch.tv/goldenvcr">twitch.tv/GoldenVCR</a></p>
+<p>
+  For information about contributing tapes to the Golden VCR Library, click
+  <Link to="/contributions">here</Link>.
+</p>
+<div class="broadcast-list">
+{#each $broadcastsWithTapes as broadcast}
+  <div class="broadcast">
+    <Link to={`/broadcasts/${broadcast.id}`}>Broadcast {broadcast.id} - {broadcast.startedAt.toLocaleDateString(window.navigator.language, {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</Link>
+    <div class="tape-list">
+{#each broadcast.tapes as tape}
+{#if tape.thumbnailImage}
+      <img
+        src={tape.thumbnailImage}
+        loading="lazy"
+        alt={`Thumbnail image for tape ${tape.id}`} 
+      />
 {:else}
-  <p>Live now at <a href="https://www.twitch.tv/goldenvcr">twitch.tv/GoldenVCR</a>!</p>
+      <div class="thumbnail-placeholder" />
 {/if}
-
-<p>
-  What are we watching next? You decide! Head on over to the
-  <Link to="/explore">Explore</Link> page to browse the collection.
-</p>
-
-{#if $auth.state.loggedIn}
-<p>
-  Hello, <b>{$auth.state.user.displayName}</b>! You currently have a balance of
-  <b>{$balance.numPointsAvailable}</b> Golden VCR Fun Points.
-</p>
-<ImageAlertForm />
-{:else}
-<p>
-  If you'd like to send a ghostly apparition to haunt my VCR, then you can use the
-  <b>Log in with Twitch</b> button above to start using Golden VCR Fun Points.
-  Connecting your Twitch account to GoldenVCR.com just lets us verify your identity as a
-  viewer; we don't require any access to your Twitch account beyond seeing which
-  channels you follow and subscribe to.
-</p>
+{/each}
+    </div>
+  </div>
+{/each}
+{#if $canLoadMoreBroadcasts}
+  <button on:click={loadMoreBroadcasts}>Load more...</button>
 {/if}
-
 </div>
-{:else}
-<AboutContent />
-{/if}
+
+<style>
+  p {
+    margin-top: 0;
+  }
+  .broadcast-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .broadcast {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .tape-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .tape-list img, .thumbnail-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+  .thumbnail-placeholder {
+    background-color: #404040;
+  }
+  button {
+    margin: 0 20%;
+    margin-top: 0.5rem;
+  }
+</style>

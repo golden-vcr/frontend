@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fetchBroadcast } from '../apis/showtime/history'
+  import { fetchBroadcast } from '../apis/broadcasts/history'
 
   import TapeListResponsive from '../lib/tapes/TapeListResponsive.svelte'
 
@@ -38,8 +38,8 @@
   <p>Live since {broadcast.startedAt.toLocaleTimeString()}.</p>
 {/if}
 
-{#if broadcast.vodUrl}
-  <p class="vod-link">VOD: <a href={broadcast.vodUrl} target="_blank">{broadcast.vodUrl}</a></p>
+{#if 0}//broadcast.vodUrl}
+  {'<p class="vod-link">VOD: <a href={broadcast.vodUrl} target="_blank">{broadcast.vodUrl}</a></p>'}
 {/if}
 </div>
 
