@@ -8,6 +8,7 @@
   import TapesPage from './routes/TapesPage.svelte'
   import TapePage from './routes/TapePage.svelte'
   import ExplorePage from './routes/ExplorePage.svelte'
+  import RemixPage from './routes/RemixPage.svelte'
   import FavoritesPage from './routes/FavoritesPage.svelte'
   import BroadcastPage from './routes/BroadcastPage.svelte'
   import AdminPage from './routes/AdminPage.svelte'
@@ -54,6 +55,9 @@
     </Route>
     <Route path="/explore">
       <ExplorePage />
+    </Route>
+    <Route path="/remix">
+      <RemixPage />
     </Route>
     <Route path="/favorites">
       <FavoritesPage />
