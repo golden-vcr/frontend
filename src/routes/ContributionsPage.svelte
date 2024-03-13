@@ -1,8 +1,11 @@
 <script lang="ts">
   import { Link } from 'svelte-routing'
+
+  const contributionsOpen = false
 </script>
 
 <h1>Contributions</h1>
+{#if contributionsOpen}
 <p>
   If you'd like to contribute VHS tapes to the Golden VCR archive, you're welcome to
   send them to:
@@ -42,6 +45,19 @@
     <li>Tapes that are already in the Golden VCR Library (you can search on the <Link to="/tapes">Tapes</Link> page to see what's already in the collection)</li>
   </ul>
 </ul>
+{:else}
+<p>
+  A great many of the tapes in the Golden VCR library have been mailed in by viewers who
+  wish to spread the love of VHS and broaden our cultural horizons, allowing us to watch
+  a more diverse range of tapes from around the world. These generous contributions are
+  greatly appreciated.
+</p>
+<p>
+  However, for the time being, submissions are temporarily closed. Thank you for your
+  patience and understanding as we work our way through the existing backlog and free up
+  space for future submissions.
+</p>
+{/if}
 
 <style>
   h1 {
