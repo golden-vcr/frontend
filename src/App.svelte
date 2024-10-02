@@ -13,6 +13,7 @@
   import BroadcastPage from './routes/BroadcastPage.svelte'
   import AdminPage from './routes/AdminPage.svelte'
   import AdminHooksPage from './routes/AdminHooksPage.svelte'
+  import AdminDataPage from './routes/AdminDataPage.svelte'
   import ProfilePage from './routes/ProfilePage.svelte'
 
   import { auth } from './auth'
@@ -70,6 +71,9 @@
     </Route>
     <Route path="/admin/hooks">
       <AdminHooksPage />
+    </Route>
+    <Route path="/admin/data">
+      <AdminDataPage />
     </Route>
     <Route path="/profile" component={ProfilePage} />
   </main>

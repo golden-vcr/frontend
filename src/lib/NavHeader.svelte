@@ -9,7 +9,7 @@
 </script>
 
 <header>
-  <nav>
+  <nav id="nav-header">
     <NavContent onClick={closeMenu} {showAdminLinks} />
   </nav>
   <div class="menu-toggle">

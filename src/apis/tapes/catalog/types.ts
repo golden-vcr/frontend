@@ -9,6 +9,7 @@ export type CatalogItem = {
   year: number
   runtime: number
   thumbnail: string
+  series?: string
   contributor?: string
   numFavorites: number
   images: GalleryImage[]

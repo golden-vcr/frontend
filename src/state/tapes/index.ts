@@ -51,6 +51,7 @@ function buildTapes(catalogListing: CatalogListing, broadcastIdsByTapeId: { [key
       title: item.title,
       year: item.year > 0 ? item.year : undefined,
       runtime: item.runtime > 0 ? item.runtime : undefined,
+      series: item.series,
       contributor: item.contributor,
       numFavorites: item.numFavorites,
       color: item.images.length > 0 ? item.images[0].color : '#cccccc',

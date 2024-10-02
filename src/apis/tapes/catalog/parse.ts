@@ -65,6 +65,12 @@ function parseCatalogItem(data: unknown): CatalogItem {
   }
   const thumbnail = obj["thumbnail"]
 
+  // CatalogItem.series
+  let series = undefined as string | undefined
+  if (typeof obj["series"] === "string" && obj["series"] !== "") {
+    series = obj["series"]
+  }
+
   // CatalogItem.contributor
   let contributor = undefined as string | undefined
   if (typeof obj["contributor"] === "string" && obj["contributor"] !== "") {
@@ -99,7 +105,7 @@ function parseCatalogItem(data: unknown): CatalogItem {
     tags.push(tag)
   }
 
-  return { id, title, year, runtime, thumbnail, contributor, numFavorites, images, tags }
+  return { id, title, year, runtime, thumbnail, series, contributor, numFavorites, images, tags }
 }
 
 function parseGalleryImage(data: unknown): GalleryImage {
